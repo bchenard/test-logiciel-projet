@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComposedTrip {
-  private List<SimpleTrip> trips;
+  private final List<SimpleTrip> trips;
 
   public ComposedTrip(List<SimpleTrip> trips) {
     this.trips = trips;
   }
 
-  public String getDeparture_city() {
-    return trips.get(0).getDeparture_city();
+  public String getDepartureCity() {
+    return trips.getFirst().getDepartureCity();
   }
 
-  public String getArrival_city() {
-    return trips.get(trips.size() - 1).getArrival_city();
+  public String getArrivalCity() {
+    return trips.getLast().getArrivalCity();
   }
 
   public List<TransportationMode> getMode() {
@@ -34,11 +34,11 @@ public class ComposedTrip {
     return price;
   }
 
-  public long getDeparture_time() {
-    return trips.get(0).getDeparture_time().getEpochSecond();
+  public long getDepartureTime() {
+    return trips.getFirst().getDepartureTime().getEpochSecond();
   }
 
-  public long getArrival_time() {
-    return trips.get(trips.size() - 1).getArrival_time().getEpochSecond();
+  public long getArrivalTime() {
+    return trips.getLast().getArrivalTime().getEpochSecond();
   }
 }
