@@ -1,0 +1,132 @@
+{
+  "Rennes": [
+    {
+      "name": "Hotel Anne de Bretagne",
+      "stars": 3,
+      "price": 85,
+      "address": "19 Place du Général de Gaulle, 35000 Rennes",
+      "lat": "48.1210329",
+      "lon": "-1.4592261"
+    },
+    {
+      "name": "Mercure Rennes Centre Parlement",
+      "stars": 4,
+      "price": 120,
+      "address": "1 Rue Paul Bellamy, 35000 Rennes",
+      "lat": "47.2330496",
+      "lon": "-1.5656797"
+    }
+  ],
+  "Nantes": [
+    {
+      "name": "Radisson Blu Hotel Nantes",
+      "stars": 4,
+      "price": 160,
+      "address": "6 Place Aristide Briand, 44000 Nantes",
+      "lat": "47.217791",
+      "lon": "-1.5632719"
+    },
+    {
+      "name": "Hotel Pommeraye",
+      "stars": 3,
+      "price": 105,
+      "address": "24 Rue Boileau, 44000 Nantes",
+      "lat": "47.2152953",
+      "lon": "-1.5607763"
+    },
+    {
+      "name": "Sofitel Nantes Centre Gare",
+      "stars": 5,
+      "price": 210,
+      "address": "1 Rue de la Digue, 44000 Nantes",
+      "lat": "47.194346",
+      "lon": "-1.5836534"
+    },
+    {
+      "name": "Ibis Styles Nantes Centre Gare",
+      "stars": 3,
+      "price": 95,
+      "address": "8 Allée Commandant Charcot, 44000 Nantes",
+      "lat": "47.2176011",
+      "lon": "-1.5444261"
+    }
+  ],
+  "Paris": [
+    {
+      "name": "Le Meurice",
+      "stars": 5,
+      "price": 900,
+      "address": "228 Rue de Rivoli, 75001 Paris",
+      "lat": "48.8651455",
+      "lon": "2.3280773"
+    },
+    {
+      "name": "Hôtel de Crillon",
+      "stars": 5,
+      "price": 950,
+      "address": "10 Place de la Concorde, 75008 Paris",
+      "lat": "48.86762185",
+      "lon": "2.3213665307395894"
+    },
+    {
+      "name": "Hotel Saint Germain",
+      "stars": 4,
+      "price": 200,
+      "address": "29 Rue de la Parcheminerie, 75005 Paris",
+      "lat": "48.8517939",
+      "lon": "2.3445289"
+    },
+    {
+      "name": "Ibis Paris Montmartre",
+      "stars": 3,
+      "price": 150,
+      "address": "5 Rue Caulaincourt, 75018 Paris",
+      "lat": "48.8853086",
+      "lon": "2.3302109"
+    }
+  ],
+  "Bordeaux": [
+    {
+      "name": "Les Sources de Caudalie",
+      "stars": 5,
+      "price": 500,
+      "address": "Smith Haut-Lafitte, 33650 Martillac",
+      "lat": "44.7322627",
+      "lon": "-0.5583542"
+    },
+    {
+      "name": "Hotel Burdigala",
+      "stars": 4,
+      "price": 180,
+      "address": "115 Rue Georges Bonnac, 33000 Bordeaux",
+      "lat": "44.8398545",
+      "lon": "-0.5866853"
+    },
+    {
+      "name": "Ibis Bordeaux Centre",
+      "stars": 3,
+      "price": 110,
+      "address": "35 Cours de l'Intendance, 33000 Bordeaux",
+      "lat": "44.8419997",
+      "lon": "-0.5771619"
+    }
+  ],
+  "Toulouse": [
+    {
+      "name": "Grand Hotel de l'Opera",
+      "stars": 5,
+      "price": 220,
+      "address": "1 Place du Capitole, 31000 Toulouse",
+      "lat": "43.60414325",
+      "lon": "1.4443377773497037"
+    },
+    {
+      "name": "Hôtel Pullman Toulouse",
+      "stars": 4,
+      "price": 160,
+      "address": "84 Allées Jean Jaurès, 31000 Toulouse",
+      "lat": "43.6085606",
+      "lon": "1.4535028"
+    }
+  ]
+}
