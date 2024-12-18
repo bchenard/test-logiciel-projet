@@ -3,37 +3,37 @@ package com.testlog.projet;
 import java.time.Instant;
 
 public class SimpleTrip {
-  private String departure_city;
-  private String arrival_city;
+  private String departureCity;
+  private String arrivalCity;
   private TransportationMode mode;
   private double price;
-  private Instant departure_time;
-  private Instant arrival_time;
+  private Instant departureTime;
+  private Instant arrivalTime;
 
-  public SimpleTrip(String departure_city, String arrival_city, TransportationMode mode, double price,
-      Instant departure_time, Instant arrival_time) {
-    this.departure_city = departure_city;
-    this.arrival_city = arrival_city;
+  public SimpleTrip(String departureCity, String arrivalCity, TransportationMode mode, double price,
+                    Instant departureTime, Instant arrivalTime) {
+    this.departureCity = departureCity;
+    this.arrivalCity = arrivalCity;
     this.mode = mode;
     this.price = price;
-    this.departure_time = departure_time;
-    this.arrival_time = arrival_time;
+    this.departureTime = departureTime;
+    this.arrivalTime = arrivalTime;
   }
 
-  public String getDeparture_city() {
-    return departure_city;
+  public String getDepartureCity() {
+    return departureCity;
   }
 
-  public void setDeparture_city(String departure_city) {
-    this.departure_city = departure_city;
+  public void setDepartureCity(String departureCity) {
+    this.departureCity = departureCity;
   }
 
-  public String getArrival_city() {
-    return arrival_city;
+  public String getArrivalCity() {
+    return arrivalCity;
   }
 
-  public void setArrival_city(String arrival_city) {
-    this.arrival_city = arrival_city;
+  public void setArrivalCity(String arrivalCity) {
+    this.arrivalCity = arrivalCity;
   }
 
   public TransportationMode getMode() {
@@ -52,20 +52,20 @@ public class SimpleTrip {
     this.price = price;
   }
 
-  public Instant getDeparture_time() {
-    return departure_time;
+  public Instant getDepartureTime() {
+    return departureTime;
   }
 
-  public void setDeparture_time(Instant departure_time) {
-    this.departure_time = departure_time;
+  public void setDepartureTime(Instant departureTime) {
+    this.departureTime = departureTime;
   }
 
-  public Instant getArrival_time() {
-    return arrival_time;
+  public Instant getArrivalTime() {
+    return arrivalTime;
   }
 
-  public void setArrival_time(Instant arrival_time) {
-    this.arrival_time = arrival_time;
+  public void setArrivalTime(Instant arrivalTime) {
+    this.arrivalTime = arrivalTime;
   }
 
 }
