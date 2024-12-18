@@ -1,4 +1,5 @@
 package com.testlog.projet;
 
-public class ActivityType {
+public enum ActivityType {
+    SPORT, CINEMA, MUSIC
 }
