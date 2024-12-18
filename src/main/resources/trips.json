@@ -1,0 +1,25 @@
+{
+  "Rennes": [
+    {"destination": "Nantes", "mode": "train", "price": 18.0, "hours": [{"start": "08:00", "end": "09:00"}, {"start": "12:00", "end": "13:00"}]},
+    {"destination": "Paris", "mode": "train", "price": 50.0, "hours": [{"start": "10:30", "end": "13:00"}, {"start": "15:00", "end": "17:30"}]},
+    {"destination": "Bordeaux", "mode": "plane", "price": 85.0, "hours": [{"start": "07:00", "end": "08:30"}, {"start": "17:00", "end": "18:30"}]}
+  ],
+  "Nantes": [
+    {"destination": "Rennes", "mode": "train", "price": 18.0, "hours": [{"start": "09:00", "end": "10:00"}, {"start": "14:00", "end": "15:00"}]},
+    {"destination": "Paris", "mode": "train", "price": 60.0, "hours": [{"start": "08:00", "end": "10:00"}, {"start": "13:00", "end": "15:00"}]},
+    {"destination": "Toulouse", "mode": "plane", "price": 90.0, "hours": [{"start": "06:00", "end": "07:30"}, {"start": "18:00", "end": "19:30"}]}
+  ],
+  "Paris": [
+    {"destination": "Nantes", "mode": "train", "price": 60.0, "hours": [{"start": "09:00", "end": "11:00"}, {"start": "14:00", "end": "16:00"}]},
+    {"destination": "Rennes", "mode": "train", "price": 50.0, "hours": [{"start": "08:30", "end": "10:30"}, {"start": "13:00", "end": "15:00"}]},
+    {"destination": "Bordeaux", "mode": "plane", "price": 110.0, "hours": [{"start": "07:00", "end": "08:15"}, {"start": "17:30", "end": "18:45"}]}
+  ],
+  "Bordeaux": [
+    {"destination": "Paris", "mode": "plane", "price": 110.0, "hours": [{"start": "06:30", "end": "07:45"}, {"start": "16:00", "end": "17:15"}]},
+    {"destination": "Rennes", "mode": "train", "price": 85.0, "hours": [{"start": "08:00", "end": "11:00"}, {"start": "13:00", "end": "16:00"}]}
+  ],
+  "Toulouse": [
+    {"destination": "Nantes", "mode": "plane", "price": 90.0, "hours": [{"start": "07:30", "end": "09:00"}, {"start": "16:30", "end": "18:00"}]},
+    {"destination": "Paris", "mode": "train", "price": 55.0, "hours": [{"start": "10:00", "end": "12:30"}, {"start": "14:00", "end": "16:30"}]}
+  ]
+}
