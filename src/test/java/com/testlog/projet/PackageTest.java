@@ -1,5 +1,6 @@
 package com.testlog.projet;
 
+import com.testlog.projet.types.ActivityType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

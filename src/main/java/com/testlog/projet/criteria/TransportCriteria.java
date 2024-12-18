@@ -1,6 +1,6 @@
 package com.testlog.projet.criteria;
 
-import com.testlog.projet.TransportationMode;
+import com.testlog.projet.types.TransportationMode;
 
 public class TransportCriteria {
   private TransportationMode preferredMode;

@@ -1,5 +1,7 @@
 package com.testlog.projet;
 
+import com.testlog.projet.types.TransportationMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,17 +13,17 @@ public class ComposedTrip {
   }
 
   public String getDepartureCity() {
-    return trips.getFirst().getDepartureCity();
+    return trips.getFirst().departureCity();
   }
 
   public String getArrivalCity() {
-    return trips.getLast().getArrivalCity();
+    return trips.getLast().arrivalCity();
   }
 
   public List<TransportationMode> getMode() {
     List<TransportationMode> modes = new ArrayList<>();
     for (SimpleTrip trip : trips) {
-      modes.add(trip.getMode());
+      modes.add(trip.mode());
     }
     return modes;
   }
@@ -29,16 +31,16 @@ public class ComposedTrip {
   public double getPrice() {
     double price = 0;
     for (SimpleTrip trip : trips) {
-      price += trip.getPrice();
+      price += trip.price();
     }
     return price;
   }
 
   public long getDepartureTime() {
-    return trips.getFirst().getDepartureTime().getEpochSecond();
+    return trips.getFirst().departureTime().getEpochSecond();
   }
 
   public long getArrivalTime() {
-    return trips.getLast().getArrivalTime().getEpochSecond();
+    return trips.getLast().arrivalTime().getEpochSecond();
   }
 }
