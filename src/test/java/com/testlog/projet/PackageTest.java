@@ -1,6 +1,7 @@
 package com.testlog.projet;
 
 import com.testlog.projet.types.ActivityType;
+import com.testlog.projet.types.Package;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ public class PackageTest {
     public void testGetActivities_emptyActivitiesList() {
         List<Activity> activities = new ArrayList<>();
         Hotel hotel = new Hotel("Test", 1.1, 1.1 , 3, "Test");  // assumes Hotel has a constructor without parameters
-        Package testPackage = new Package(activities, hotel);
+        com.testlog.projet.types.Package testPackage = new com.testlog.projet.types.Package(activities, hotel);
 
         List<Activity> retrievedActivities = testPackage.getActivities();
         Assertions.assertTrue(retrievedActivities.isEmpty());
@@ -26,7 +27,7 @@ public class PackageTest {
         activities.add(activity);
 
         Hotel hotel = new Hotel("Test", 1.1, 1.1 , 3, "Test");  // assumes Hotel has a constructor without parameters
-        Package testPackage = new Package(activities, hotel);
+        com.testlog.projet.types.Package testPackage = new com.testlog.projet.types.Package(activities, hotel);
 
         List<Activity> retrievedActivities = testPackage.getActivities();
         Assertions.assertEquals(1, retrievedActivities.size());
@@ -43,7 +44,7 @@ public class PackageTest {
         activities.add(activity2);
 
         Hotel hotel = new Hotel("Test", 1.1, 1.1 , 3, "Test");  // assumes Hotel has a constructor without parameters
-        Package testPackage = new Package(activities, hotel);
+        com.testlog.projet.types.Package testPackage = new Package(activities, hotel);
 
         List<Activity> retrievedActivities = testPackage.getActivities();
         Assertions.assertEquals(2, retrievedActivities.size());
