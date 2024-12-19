@@ -1,5 +1,6 @@
 package com.testlog.projet.optimize;
 
+import com.testlog.projet.criteria.ActivityCriteria;
 import com.testlog.projet.criteria.HotelCriteria;
 import com.testlog.projet.types.Activity;
 import com.testlog.projet.types.Hotel;
