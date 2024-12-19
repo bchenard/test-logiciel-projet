@@ -15,6 +15,7 @@ import com.testlog.projet.types.SimpleTrip;
 public class TransportOptimizer implements ITransportOptimizer {
   private TransportService transportService;
   
+  @Override
   public ComposedTrip getOptimizedTrip(String origin, String destination) {
     PriorityQueue<String> cities = new PriorityQueue<>();
 
