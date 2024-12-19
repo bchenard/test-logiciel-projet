@@ -31,7 +31,8 @@ public class HotelService implements ICityService<Hotel> {
                     Double.parseDouble(hotelInfo.getLat()),
                     Double.parseDouble(hotelInfo.getLon()),
                     hotelInfo.getStars(),
-                    hotelInfo.getName()
+                    hotelInfo.getName(),
+                    hotelInfo.getPrice()
             ));
         }
         return hotels;
