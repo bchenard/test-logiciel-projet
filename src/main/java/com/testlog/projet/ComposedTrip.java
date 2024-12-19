@@ -1,5 +1,6 @@
 package com.testlog.projet;
 
+import com.testlog.projet.types.SimpleTrip;
 import com.testlog.projet.types.TransportationMode;
 
 import java.util.ArrayList;
