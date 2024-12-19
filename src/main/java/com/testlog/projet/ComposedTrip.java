@@ -44,4 +44,15 @@ public class ComposedTrip {
   public long getArrivalTime() {
     return trips.getLast().arrivalTime().getEpochSecond();
   }
+
+  @Override
+  public String toString() {
+    StringBuilder stringBuilder = new StringBuilder();
+
+    for (SimpleTrip trip : trips) {
+      stringBuilder.append(trip).append("\n");
+    }
+
+    return stringBuilder.toString();
+  }
 }

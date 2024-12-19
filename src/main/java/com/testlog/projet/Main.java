@@ -1,6 +1,7 @@
 package com.testlog.projet;
 
 
+import com.testlog.projet.optimize.TransportOptimizer;
 import com.testlog.projet.services.ActivityService;
 import com.testlog.projet.types.Activity;
 
@@ -23,7 +24,11 @@ public class Main {
         System.out.println("\nActivities in Unknown City:");
         List<Activity> unknownActivities = activityService.getForCity("UnknownCity");
 
-            unknownActivities.forEach(System.out::println);
+        unknownActivities.forEach(System.out::println);
 
+        TransportOptimizer to = new TransportOptimizer();
+        ComposedTrip ct = to.getOptimizedTrip("Toulouse", "Bordeaux");
+
+        System.out.println("Path found : " + ct.toString());
     }
     }
