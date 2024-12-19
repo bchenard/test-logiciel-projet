@@ -1,4 +1,4 @@
 package com.testlog.projet.optimize;
 
-public class Optimizer {
+public class Optimizer implements IOptimizer{
 }

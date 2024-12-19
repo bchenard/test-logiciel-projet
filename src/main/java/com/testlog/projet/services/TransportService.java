@@ -1,4 +1,4 @@
 package com.testlog.projet.services;
 
-public class TransportService {
+public class TransportService implements ITransportService{
 }
