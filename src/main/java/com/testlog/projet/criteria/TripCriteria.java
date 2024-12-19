@@ -1,7 +1,5 @@
 package com.testlog.projet.criteria;
 
-public class TripCriteria {
-  private HotelCriteria hotelCriteria;
-  private TransportCriteria transportCriteria;
-  private AdditionalCriteria additionalCriteria;
+public record TripCriteria(HotelCriteria hotelCriteria, TransportCriteria transportCriteria,
+                           AdditionalCriteria additionalCriteria) {
 }
