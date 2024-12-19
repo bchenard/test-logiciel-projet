@@ -1,4 +1,4 @@
 package com.testlog.projet.types;
 
-public record Hotel(String city, Double latitude, Double longitude, int stars, String name) {
+public record Hotel(String city, LatLng coordinates, int stars, String name, double price) {
 }

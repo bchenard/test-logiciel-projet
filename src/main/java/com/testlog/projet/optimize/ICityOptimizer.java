@@ -9,5 +9,5 @@ import com.testlog.projet.types.Pair;
 import java.util.List;
 
 public interface ICityOptimizer {
-    Pair<Hotel, List<Activity>> optimize(HotelCriteria hotelCriteria, ActivityCriteria activityCriteria, String city, int days, int budget);
+    Pair<Hotel, List<Activity>> optimize(HotelCriteria hotelCriteria, ActivityCriteria activityCriteria, String city, int days, double budget);
 }
