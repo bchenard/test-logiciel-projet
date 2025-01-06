@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.testlog.projet.types.Activity;
 import com.testlog.projet.types.ActivityType;
+import com.testlog.projet.types.LatLng;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,8 +30,7 @@ public class ActivityService implements ICityService<Activity> {
         for (ActivityInfo activityInfo : activityInfos) {
             activities.add(new Activity(
                     city,
-                    Double.parseDouble(activityInfo.getLat()),
-                    Double.parseDouble(activityInfo.getLon()),
+                    new LatLng(Double.parseDouble(activityInfo.getLat()), Double.parseDouble(activityInfo.getLon())),
                     ActivityType.valueOf(activityInfo.getCategory().toUpperCase()),
                     activityInfo.getPrice(),
                     activityInfo.getDays()
