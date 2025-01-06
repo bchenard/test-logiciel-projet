@@ -8,6 +8,14 @@ import com.testlog.projet.types.Hotel;
 import com.testlog.projet.types.LatLng;
 import com.testlog.projet.types.Pair;
 
+
+import com.google.ortools.Loader;
+import com.google.ortools.init.OrToolsVersion;
+import com.google.ortools.linearsolver.MPConstraint;
+import com.google.ortools.linearsolver.MPObjective;
+import com.google.ortools.linearsolver.MPSolver;
+import com.google.ortools.linearsolver.MPVariable;
+
 import java.util.List;
 
 public class CityOptimizer implements ICityOptimizer {
