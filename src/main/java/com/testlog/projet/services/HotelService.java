@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.testlog.projet.types.Hotel;
+import com.testlog.projet.types.LatLng;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,8 +29,7 @@ public class HotelService implements ICityService<Hotel> {
         for (HotelInfo hotelInfo : hotelInfos) {
             hotels.add(new Hotel(
                     city,
-                    Double.parseDouble(hotelInfo.getLat()),
-                    Double.parseDouble(hotelInfo.getLon()),
+                    new LatLng(Double.parseDouble(hotelInfo.getLat()), Double.parseDouble(hotelInfo.getLon())),
                     hotelInfo.getStars(),
                     hotelInfo.getName(),
                     hotelInfo.getPrice()

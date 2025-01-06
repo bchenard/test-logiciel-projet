@@ -80,6 +80,14 @@
             <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Integer programming to solve maximization of activities -->
+        <dependency>
+            <groupId>com.google.ortools</groupId>
+            <artifactId>ortools-java</artifactId>
+            <version>9.11.4210</version>
+        </dependency>
+
     </dependencies>
 
 </project>
