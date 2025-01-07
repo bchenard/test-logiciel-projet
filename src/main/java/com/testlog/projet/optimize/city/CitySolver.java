@@ -11,11 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CitySolver implements ICitySolver {
-
-    public CitySolver() {
+    static {
         Loader.loadNativeLibraries();
     }
-
     // List<Hotel> not in the LP solver because it would introduce too many variables
     // It is possible to just solve for each hotel available in the given city
 
