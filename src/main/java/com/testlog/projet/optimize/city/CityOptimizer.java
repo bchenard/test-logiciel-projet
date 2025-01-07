@@ -43,10 +43,10 @@ public class CityOptimizer implements ICityOptimizer {
     }
 
     /**
-     * Returns the total price of a hotel and a list of activities.
+     * Returns the total price of a hotel and a list of activities. Null activities are ignored.
      */
     public double getTotalPrice(Pair<Hotel, List<Activity>> pair) {
-        return pair.first().price() + pair.second().stream().mapToDouble(Activity::price).sum();
+        return pair.first().price() + pair.second().stream().filter(Objects::nonNull).mapToDouble(Activity::price).sum();
     }
 
     /**
@@ -59,8 +59,9 @@ public class CityOptimizer implements ICityOptimizer {
     /**
      * Returns true if 'a' is better than 'b' according to the given hotel criteria.
      * If 'b' is null, returns true.
+     * Does not care about minStars.
      */
-    private boolean compare(Pair<Hotel, List<Activity>> a, Pair<Hotel, List<Activity>> b, HotelCriteria hotelCriteria) {
+    boolean compare(Pair<Hotel, List<Activity>> a, Pair<Hotel, List<Activity>> b, HotelCriteria hotelCriteria) {
         if (b == null) return true;
 
         List<Activity> activitiesA = a.second();
@@ -74,10 +75,22 @@ public class CityOptimizer implements ICityOptimizer {
             return activityCountA > activityCountB;
         }
 
+        double priceA = getTotalPrice(a);
+        double priceB = getTotalPrice(b);
+        int starsA = a.first().stars();
+        int starsB = b.first().stars();
+
         if (hotelCriteria.preferMinPricesOverMaxStars()) {
-            return getTotalPrice(a) < getTotalPrice(b);
+            if (priceA != priceB) {
+                return priceA < priceB;
+            }
+            return a.first().stars() > b.first().stars();
+        } else {
+            if (starsA != starsB) {
+                return starsA > starsB;
+            }
+            return priceA < priceB;
         }
-        return a.first().stars() > b.first().stars();
     }
 
     @Override
