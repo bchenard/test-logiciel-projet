@@ -29,6 +29,8 @@ public class ActivityService implements ICityService<Activity> {
 
         for (ActivityInfo activityInfo : activityInfos) {
             activities.add(new Activity(
+                    activityInfo.getName(),
+                    activityInfo.getAddress(),
                     city,
                     new LatLng(Double.parseDouble(activityInfo.getLat()), Double.parseDouble(activityInfo.getLon())),
                     ActivityType.valueOf(activityInfo.getCategory().toUpperCase()),
