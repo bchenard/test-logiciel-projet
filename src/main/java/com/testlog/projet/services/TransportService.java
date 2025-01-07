@@ -32,8 +32,8 @@ public class TransportService implements ICityService<SimpleTrip> {
 
         for (ConnectionInfo connection : connections) {
             for (Schedule schedule : connection.getHours()) {
-                Instant departureTime = parseTime(today, schedule.getStart());
-                Instant arrivalTime = parseTime(today, schedule.getEnd());
+                LocalDateTime departureTime = parseTime(today, schedule.getStart());
+                LocalDateTime arrivalTime = parseTime(today, schedule.getEnd());
                 trips.add(new SimpleTrip(
                         city,
                         connection.getDestination(),
@@ -57,12 +57,11 @@ public class TransportService implements ICityService<SimpleTrip> {
         }
     }
 
-    private Instant parseTime(LocalDate date, String time) {
-        LocalDateTime dateTime = LocalDateTime.of(
+    private LocalDateTime parseTime(LocalDate date, String time) {
+        return LocalDateTime.of(
                 date.getYear(), date.getMonth(), date.getDayOfMonth(),
                 Integer.parseInt(time.split(":")[0]), Integer.parseInt(time.split(":")[1])
         );
-        return dateTime.atZone(ZoneId.systemDefault()).toInstant();
     }
 
     // Nested classes for JSON deserialization
