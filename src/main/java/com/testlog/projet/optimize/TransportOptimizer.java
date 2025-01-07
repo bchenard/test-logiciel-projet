@@ -9,12 +9,16 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 import com.testlog.projet.ComposedTrip;
+import com.testlog.projet.services.ICityService;
 import com.testlog.projet.services.TransportService;
 import com.testlog.projet.types.SimpleTrip;
 
 public class TransportOptimizer implements ITransportOptimizer {
-  private TransportService transportService = new TransportService();
+  private TransportService transportService;
 
+  public TransportOptimizer(ICityService transportService) {
+    this.transportService = (TransportService) transportService;
+  }
   @Override
   public ComposedTrip getOptimizedTrip(String origin, String destination) {
     PriorityQueue<String> cities = new PriorityQueue<>();
@@ -37,7 +41,7 @@ public class TransportOptimizer implements ITransportOptimizer {
 
       double distance = distances.get(city);
 
-      for (SimpleTrip trip : transportService.getForCity(city)) {
+      for (SimpleTrip trip : this.transportService.getForCity(city)) {
         String nextCity = trip.arrivalCity();
         double newDistance = distance + trip.price();
 
