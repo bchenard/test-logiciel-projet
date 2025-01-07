@@ -10,6 +10,11 @@ import java.util.List;
 
 public interface ICityOptimizer {
     /**
+     * Returns the total price of a hotel and a list of activities.
+     */
+    double getTotalPrice(Pair<Hotel, List<Activity>> pair);
+
+    /**
      * Optimize a trip in a city.
      *
      * @param city             city where the trip will take place
