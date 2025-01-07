@@ -136,6 +136,62 @@ public class CityOptimizerTest {
     }
 
     @Test
+    public void testCompare_withSameActivities_equalPrice_lowerStars_preferMinPrice() {
+        HotelCriteria hotelCriteria = new HotelCriteria(true, 0);
+
+        // Hotel B has lower stars than Hotel A
+        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 100);
+        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel2", 100);
+
+        Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
+        Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
+
+        assertFalse(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+    }
+
+    @Test
+    public void testCompare_withSameActivities_equalPrice_higherStars_preferMinPrice() {
+        HotelCriteria hotelCriteria = new HotelCriteria(true, 0);
+
+        // Hotel B has higher stars than Hotel A
+        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel1", 100);
+        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 100);
+
+        Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
+        Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
+
+        assertTrue(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+    }
+
+    @Test
+    public void testCompare_withSameActivities_equalStars_lowerPrice_preferMaxStars() {
+        HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
+
+        // Hotel B is more expensive than Hotel A
+        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 100);
+        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 101);
+
+        Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
+        Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
+
+        assertTrue(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+    }
+
+    @Test
+    public void testCompare_withSameActivities_equalStars_higherPrice_preferMaxStars() {
+        HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
+
+        // Hotel B is less expensive than Hotel A
+        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 101);
+        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 100);
+
+        Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
+        Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
+
+        assertFalse(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+    }
+
+    @Test
     public void testOptimize_withNoActivities() {
         when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
         when(activityService.getForCity(any())).thenReturn(List.of());
@@ -202,6 +258,34 @@ public class CityOptimizerTest {
         assertEquals(3, result.second().size(), "3 days should be planned");
         assertEquals(activityA, result.second().getFirst(), "The activity should be planned");
         assertEquals(activityB, result.second().get(1), "The activity should be planned");
+        assertNull(result.second().get(2), "No activity should be planned");
+    }
+
+    @Test
+    public void testOptimize_withTooHighStarsRequired() {
+        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB, null));
+
+        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 5), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testOptimize_withTooFarAwayActivity() {
+        Activity farActivity = new Activity("name", "address", "Bordeaux", new LatLng(10., 10.), ActivityType.CULTURE, 50., List.of(true, true, true, true, true, true, true));
+
+        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any())).thenReturn(List.of(farActivity));
+        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(null, null, null));
+
+        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)));
+
+        assertEquals(hotelA, result.first());
+        assertEquals(3, result.second().size(), "3 days should be planned, eventually null");
+        assertNull(result.second().get(0), "No activity should be planned");
+        assertNull(result.second().get(1), "No activity should be planned");
         assertNull(result.second().get(2), "No activity should be planned");
     }
 }
