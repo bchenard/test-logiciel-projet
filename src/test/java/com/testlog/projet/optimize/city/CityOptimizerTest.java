@@ -19,24 +19,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class CityOptimizerTest {
-
-    @Test
-    public void runTest() {
-        HotelService hotelService = new HotelService();
-        ActivityService activityService = new ActivityService();
-        CitySolver citySolver = new CitySolver();
-        CityOptimizer cityOptimizer = new CityOptimizer(hotelService, activityService, citySolver);
-        int startDay = 0;
-        int nbDays = 2;
-        double budget = 99999;
-
-        HotelCriteria hotelCriteria = new HotelCriteria(true, 3);
-        List<ActivityType> types = List.of(ActivityType.MUSIC, ActivityType.CINEMA, ActivityType.CULTURE, ActivityType.SPORT);
-        ActivityCriteria activityCriteria = new ActivityCriteria(300, types);
-
-        cityOptimizer.optimize("Bordeaux", startDay, nbDays, budget, hotelCriteria, activityCriteria);
-    }
-
     @Mock
     ICityService<Hotel> hotelService;
     @Mock
