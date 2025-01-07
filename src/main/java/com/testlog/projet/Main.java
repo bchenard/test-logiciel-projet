@@ -1,35 +1,51 @@
 package com.testlog.projet;
 
 
+import com.testlog.projet.criteria.ActivityCriteria;
+import com.testlog.projet.criteria.AdditionalCriteria;
+import com.testlog.projet.criteria.HotelCriteria;
+import com.testlog.projet.criteria.TransportCriteria;
+import com.testlog.projet.optimize.Optimizer;
 import com.testlog.projet.optimize.TransportOptimizer;
+import com.testlog.projet.optimize.city.CityOptimizer;
+import com.testlog.projet.optimize.city.CitySolver;
 import com.testlog.projet.services.ActivityService;
+import com.testlog.projet.services.HotelService;
 import com.testlog.projet.services.TransportService;
-import com.testlog.projet.types.Activity;
+import com.testlog.projet.types.ActivityType;
+import com.testlog.projet.types.Package;
+import com.testlog.projet.types.TransportationMode;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
+        TransportService transportService = new TransportService();
+        HotelService hotelService = new HotelService();
         ActivityService activityService = new ActivityService();
 
-        System.out.println("Activities in Rennes:");
-        List<Activity> rennesActivities = activityService.getForCity("Rennes");
-        rennesActivities.forEach(System.out::println);
+        // TODO: To change once transport service takes transportService as parameter
+        TransportOptimizer transportOptimizer = new TransportOptimizer(transportService);
 
-        System.out.println("\nActivities in Nantes:");
-        List<Activity> nantesActivities = activityService.getForCity("Nantes");
-        nantesActivities.forEach(System.out::println);
+        CitySolver citySolver = new CitySolver();
+        CityOptimizer cityOptimizer = new CityOptimizer(hotelService, activityService, citySolver);
 
-        System.out.println("\nActivities in Unknown City:");
-        List<Activity> unknownActivities = activityService.getForCity("UnknownCity");
+        Optimizer optimizer = new Optimizer(transportOptimizer, cityOptimizer);
 
-        unknownActivities.forEach(System.out::println);
 
-        TransportOptimizer to = new TransportOptimizer(new TransportService());
-        ComposedTrip ct = to.getOptimizedTrip("Toulouse", "Bordeaux");
+        TransportCriteria transportCriteria = new TransportCriteria(TransportationMode.NOT_SPECIFIED, true);
+        HotelCriteria hotelCriteria = new HotelCriteria(true, 3);
 
-        System.out.println("Path found : " + ct.toString());
+        List<ActivityType> categories = List.of(ActivityType.CULTURE, ActivityType.CINEMA, ActivityType.SPORT, ActivityType.MUSIC);
+        ActivityCriteria activityCriteria = new ActivityCriteria(50, categories);
+
+        LocalDateTime start = LocalDateTime.of(2024, 6, 3, 0, 0);
+        Duration duration = Duration.ofDays(3);
+        AdditionalCriteria additionalCriteria = new AdditionalCriteria(start, 1000, duration, "Paris", "Bordeaux");
+
+        Package solution = optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, additionalCriteria);
     }
-    }
+}
