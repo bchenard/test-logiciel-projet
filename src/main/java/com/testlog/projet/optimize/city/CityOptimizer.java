@@ -45,7 +45,7 @@ public class CityOptimizer implements ICityOptimizer {
     /**
      * Returns the total price of a hotel and a list of activities.
      */
-    private double getTotalPrice(Pair<Hotel, List<Activity>> pair) {
+    public double getTotalPrice(Pair<Hotel, List<Activity>> pair) {
         return pair.first().price() + pair.second().stream().mapToDouble(Activity::price).sum();
     }
 
