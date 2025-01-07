@@ -29,10 +29,16 @@ public class CitySolver implements ICitySolver {
      * @param budget     budget for the whole trip in the city (not including transportation to and from the city)
      * @return List<Activity> where the list is indexed by days since startDay.
      * If no activity is planned for a given day, the list will contain a null value.
+     * If the problem cannot be solved, a list of null is returned.
      */
     public List<Activity> solve(List<Activity> activities, int startDay, int nbDays, double budget) {
         MPSolver solver = MPSolver.createSolver("CBC");
         int activityCount = activities.size();
+
+        List<Activity> solution = new ArrayList<>(nbDays);
+        for (int i = 0; i < nbDays; i++) {
+            solution.add(null);
+        }
 
         MPVariable[][] vars = new MPVariable[nbDays][activityCount];
         for (int d = 0; d < nbDays; d++) {
@@ -90,25 +96,14 @@ public class CitySolver implements ICitySolver {
         }
         objective.setMaximization();
 
-        System.out.println("Solving with " + solver.numVariables() + " boolean variables and " + solver.numConstraints() + " constraints...");
-
         final MPSolver.ResultStatus resultStatus = solver.solve();
 
-        // Remove previous "..." and write ". Status = "
-        System.out.println("Status = " + resultStatus);
         if (resultStatus != MPSolver.ResultStatus.OPTIMAL) {
-            if (resultStatus == MPSolver.ResultStatus.FEASIBLE) {
-                System.out.println("A potentially suboptimal solution was found");
-            } else {
-                System.out.println("The solver could not solve the problem.");
-                throw new RuntimeException("The solver could not solve the problem.");
-            }
+            // The problem always has a solution, so this should never happen
+            // In fact, a (bad) solution could be to select no activity at all
+            throw new IllegalStateException("The problem cannot be solved.");
         }
 
-        List<Activity> solution = new ArrayList<>(nbDays);
-        for (int i = 0; i < nbDays; i++) {
-            solution.add(null);
-        }
         // Parse the optimal solution to find the selected activities
         for (int d = 0; d < nbDays; d++) {
             for (int a = 0; a < activityCount; a++) {
