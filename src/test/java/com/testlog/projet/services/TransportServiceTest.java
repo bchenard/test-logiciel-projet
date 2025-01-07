@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 import java.util.Map;
 
@@ -48,14 +45,14 @@ public class TransportServiceTest {
         assertEquals(TransportationMode.TRAIN, first.mode());
         assertEquals(12.5, first.price(), 0.001);
 
-        Instant expectedDepart1 = toInstant(LocalDate.now(), LocalTime.of(8, 0));
-        Instant expectedArrive1 = toInstant(LocalDate.now(), LocalTime.of(10, 0));
+        LocalDateTime expectedDepart1 = LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0));
+        LocalDateTime expectedArrive1 = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0));
         assertEquals(expectedDepart1, first.departureTime());
         assertEquals(expectedArrive1, first.arrivalTime());
 
         SimpleTrip second = trips.get(1);
-        Instant expectedDepart2 = toInstant(LocalDate.now(), LocalTime.of(14, 30));
-        Instant expectedArrive2 = toInstant(LocalDate.now(), LocalTime.of(15, 30));
+        LocalDateTime expectedDepart2 = LocalDateTime.of(LocalDate.now(), LocalTime.of(14, 30));
+        LocalDateTime expectedArrive2 = LocalDateTime.of(LocalDate.now(), LocalTime.of(15, 30));
         assertEquals(expectedDepart2, second.departureTime());
         assertEquals(expectedArrive2, second.arrivalTime());
     }
