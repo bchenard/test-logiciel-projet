@@ -3,6 +3,7 @@ package com.testlog.projet;
 import com.testlog.projet.types.SimpleTrip;
 import com.testlog.projet.types.TransportationMode;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +38,12 @@ public class ComposedTrip {
     return price;
   }
 
-  public long getDepartureTime() {
-    return trips.getFirst().departureTime().getEpochSecond();
+  public LocalDateTime getDepartureTime() {
+    return trips.getFirst().departureTime();
   }
 
-  public long getArrivalTime() {
-    return trips.getLast().arrivalTime().getEpochSecond();
+  public LocalDateTime getArrivalTime() {
+    return trips.getLast().arrivalTime();
   }
 
   @Override
