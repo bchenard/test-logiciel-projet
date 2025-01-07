@@ -2,8 +2,6 @@ package com.testlog.projet.optimize.city;
 
 import com.testlog.projet.criteria.ActivityCriteria;
 import com.testlog.projet.criteria.HotelCriteria;
-import com.testlog.projet.services.ActivityService;
-import com.testlog.projet.services.HotelService;
 import com.testlog.projet.services.ICityService;
 import com.testlog.projet.types.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CityOptimizerTest {
@@ -39,7 +38,9 @@ public class CityOptimizerTest {
     final Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 4, "Hotel2", 200);
 
     final Activity activityA = new Activity("name", "address", "Bordeaux", new LatLng(1., 1.), ActivityType.CULTURE, 50., List.of(true, true, true, true, true, true, true));
-    final Activity activityB = new Activity("name", "address", "Bordeaux", new LatLng(1., 1.), ActivityType.CINEMA, 75., List.of(true, true, true, true, true, true, true));
+    final Activity activityB = new Activity("name", "address", "Bordeaux", new LatLng(1.3, 1.3), ActivityType.CINEMA, 75., List.of(true, true, true, true, true, true, true));
+
+    // Distance between hotel A and activity B is 47.171
 
     final Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
     final Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
@@ -174,20 +175,26 @@ public class CityOptimizerTest {
     }
 
     @Test
+    public void testCompare_withEqualObjects_shouldReturnFirst_preferMinPrice() {
+        HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
+        assertTrue(cityOptimizer.compare(pairA, pairA, hotelCriteria));
+    }
+
+    @Test
+    public void testCompare_withNullSecond_shouldReturnFirst_preferMaxStars() {
+        HotelCriteria hotelCriteria = new HotelCriteria(true, 0);
+        assertTrue(cityOptimizer.compare(pairA, pairA, hotelCriteria));
+    }
+
+
+    @Test
     public void testOptimize_withNoActivities() {
         when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
         when(activityService.getForCity(any())).thenReturn(List.of());
-        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(null, null, null));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
 
-        assertEquals(hotelA, result.first());
-        assertEquals(3, result.second().size(), "3 days should be planned, eventually null");
-
-        assertNull(result.second().get(0), "No activity should be planned");
-        assertNull(result.second().get(1), "No activity should be planned");
-        assertNull(result.second().get(2), "No activity should be planned");
-
+        verify(citySolver).solve(List.of(), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
@@ -205,49 +212,36 @@ public class CityOptimizerTest {
     public void testOptimize_withOneHotelAndOneActivity_noCategory() {
         when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
         when(activityService.getForCity(any())).thenReturn(List.of(activityA));
-        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(null, null, null));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
 
-        assertEquals(hotelA, result.first());
-        assertEquals(3, result.second().size(), "No activity should be planned");
+        verify(citySolver).solve(List.of(), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_withOneHotelAndOneActivity_withItsCategory() {
         when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
         when(activityService.getForCity(any())).thenReturn(List.of(activityA));
-        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, null, null));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)));
 
-        assertEquals(hotelA, result.first());
-        assertEquals(3, result.second().size(), "3 days should be planned, eventually null");
-        assertEquals(activityA, result.second().getFirst(), "The activity should be planned");
-        assertNull(result.second().get(1), "No activity should be planned");
-        assertNull(result.second().get(2), "No activity should be planned");
+        verify(citySolver).solve(List.of(activityA), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_withMultipleHotelsAndActivities() {
         when(hotelService.getForCity(any())).thenReturn(List.of(hotelA, hotelB));
         when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
-        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB, null));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
 
-        assertEquals(hotelA, result.first());
-        assertEquals(3, result.second().size(), "3 days should be planned");
-        assertEquals(activityA, result.second().getFirst(), "The activity should be planned");
-        assertEquals(activityB, result.second().get(1), "The activity should be planned");
-        assertNull(result.second().get(2), "No activity should be planned");
+        verify(citySolver).solve(List.of(activityA, activityB), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_withTooHighStarsRequired() {
         when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
         when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
-        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB, null));
 
         Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 5), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
 
@@ -260,14 +254,57 @@ public class CityOptimizerTest {
 
         when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
         when(activityService.getForCity(any())).thenReturn(List.of(farActivity));
-        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(null, null, null));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)));
+
+        verify(citySolver).solve(List.of(), 0, 2, 99999 - 100 * 2);
+    }
+
+    @Test
+    public void testOptimize_checkSolveInput() {
+        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB, null));
+
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+
+        verify(citySolver).solve(List.of(activityA, activityB), 0, 2, 99999 - 100 * 2);
+    }
+
+    @Test
+    public void testOptimize_checkSolveInput_withDifferentHotel() {
+        when(hotelService.getForCity(any())).thenReturn(List.of(hotelB));
+        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB, null));
+
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CINEMA)));
+
+        verify(citySolver).solve(List.of(activityB), 0, 2, 99999 - 200 * 2);
+    }
+
+    @Test
+    public void testOptimize_returnValue_whenOptimal() {
+        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA, hotelB));
+        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB));
+
+        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
 
         assertEquals(hotelA, result.first());
-        assertEquals(3, result.second().size(), "3 days should be planned, eventually null");
-        assertNull(result.second().get(0), "No activity should be planned");
-        assertNull(result.second().get(1), "No activity should be planned");
-        assertNull(result.second().get(2), "No activity should be planned");
+        assertEquals(2, result.second().size());
+        assertEquals(List.of(activityA, activityB), result.second());
+    }
+
+    @Test
+    public void testOptimize_returnValue_whenOptimal_withDifferentHotel() {
+        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA, hotelB));
+        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB));
+
+        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(false, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+
+        assertEquals(hotelB, result.first());
+        assertEquals(2, result.second().size());
+        assertEquals(List.of(activityA, activityB), result.second());
     }
 }
