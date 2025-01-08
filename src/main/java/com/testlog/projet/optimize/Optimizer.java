@@ -31,14 +31,18 @@ public class Optimizer implements IOptimizer {
         String destination = other.destinationCity();
 
         LocalDateTime returnDate = other.departureDate().plus(other.duration());
-        ComposedTrip forward = transportOptimizer.getOptimizedTrip(origin, destination, other.departureDate(), transportCriteria);
-        ComposedTrip backward = transportOptimizer.getOptimizedTrip(destination, origin, returnDate, transportCriteria);
+        ComposedTrip forward = transportOptimizer.getOptimizedTrip(origin, destination, other.departureDate(), transportCriteria, other.maxPrice());
+        ComposedTrip backward = transportOptimizer.getOptimizedTrip(destination, origin, returnDate, transportCriteria, other.maxPrice() - forward.getPrice());
 
         LocalDateTime arrival = forward.getArrivalTime();
         LocalDateTime departure = backward.getDepartureTime();
 
         int startDay = arrival.getDayOfWeek().getValue() - 1;
         int nbDays = (int) arrival.until(departure, ChronoUnit.DAYS);
+
+
+        System.out.println(startDay);
+        System.out.println(nbDays);
 
         double transportCost = forward.getPrice() + backward.getPrice();
         double newBudget = other.maxPrice() - transportCost;
