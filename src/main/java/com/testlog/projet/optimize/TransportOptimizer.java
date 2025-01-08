@@ -28,7 +28,7 @@ public class TransportOptimizer implements ITransportOptimizer {
     }
 
     @Override
-    public ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime date, TransportCriteria transportCriteria) {
+    public ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime date, TransportCriteria transportCriteria, Double maxPrice) {
         PriorityQueue<String> cities = new PriorityQueue<>();
 
         // Distances is the price to get to a city, trying to minimize it
@@ -44,7 +44,13 @@ public class TransportOptimizer implements ITransportOptimizer {
             if (city.equals(destination)) {
                 // Found the destination
                 List<SimpleTrip> optimalTrips = reconstructOptimalPath(optimalPaths, destination);
-                return new ComposedTrip(optimalTrips);
+                ComposedTrip composedTrip = new ComposedTrip(optimalTrips);
+
+                if (composedTrip.getPrice() <= maxPrice) {
+                    return composedTrip;
+                } else {
+                    throw new IllegalArgumentException("No trips available");
+                }
             }
 
             double distance = distances.get(city);

@@ -32,7 +32,7 @@ public class Main {
         ActivityCriteria activityCriteria = new ActivityCriteria(50, categories);
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 8, 0, 0);
-        Duration duration = Duration.ofDays(3);
+        Duration duration = Duration.ofDays(10);
         AdditionalCriteria additionalCriteria = new AdditionalCriteria(start, 1000, duration, "Paris", "Bordeaux");
 
         Package solution = optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, additionalCriteria);
