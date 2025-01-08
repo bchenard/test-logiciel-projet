@@ -41,7 +41,8 @@ public class OptimizerTest {
     final TransportCriteria transportCriteria = new TransportCriteria(TransportationMode.TRAIN, true);
     final HotelCriteria hotelCriteria = new HotelCriteria(true, 3);
     final ActivityCriteria activityCriteria = new ActivityCriteria(1000., activityTypes);
-    final AdditionalCriteria other = new AdditionalCriteria(departure, 1000., duration, "origin", "destination");
+    final double maxPrice = 1000.;
+    final AdditionalCriteria other = new AdditionalCriteria(departure, maxPrice, duration, "origin", "destination");
 
     @Test
     public void testSolve_calls() {
@@ -49,8 +50,8 @@ public class OptimizerTest {
         ComposedTrip forward = mock(ComposedTrip.class);
         ComposedTrip backward = mock(ComposedTrip.class);
 
-        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria)).thenReturn(forward);
-        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria)).thenReturn(backward);
+        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice)).thenReturn(forward);
+        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.)).thenReturn(backward);
 
         when(forward.getArrivalTime()).thenReturn(departure);
         when(backward.getDepartureTime()).thenReturn(returnDate);
@@ -62,8 +63,8 @@ public class OptimizerTest {
 
         optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, other);
 
-        verify(transportOptimizer).getOptimizedTrip("origin", "destination", departure, transportCriteria);
-        verify(transportOptimizer).getOptimizedTrip("destination", "origin", returnDate, transportCriteria);
+        verify(transportOptimizer).getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice);
+        verify(transportOptimizer).getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.);
         verify(cityOptimizer).optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria);
         verify(cityOptimizer).getTotalPrice(cityTrip, 1);
     }
@@ -78,8 +79,8 @@ public class OptimizerTest {
         ComposedTrip forward = mock(ComposedTrip.class);
         ComposedTrip backward = mock(ComposedTrip.class);
 
-        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria)).thenReturn(forward);
-        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria)).thenReturn(backward);
+        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice)).thenReturn(forward);
+        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.)).thenReturn(backward);
 
         when(forward.getArrivalTime()).thenReturn(departure);
         when(backward.getDepartureTime()).thenReturn(returnDate);
@@ -91,21 +92,22 @@ public class OptimizerTest {
 
         optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, other);
 
-        verify(transportOptimizer).getOptimizedTrip("origin", "destination", departure, transportCriteria);
-        verify(transportOptimizer).getOptimizedTrip("destination", "origin", returnDate, transportCriteria);
+        verify(transportOptimizer).getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice);
+        verify(transportOptimizer).getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.);
         verify(cityOptimizer).optimize("destination", 2, 2, 700., hotelCriteria, activityCriteria);
         verify(cityOptimizer).getTotalPrice(cityTrip, 2);
     }
 
     @Test
     public void testSolve_withNotEnoughBudgetForTransport() {
-        AdditionalCriteria other = new AdditionalCriteria(departure, 100., duration, "origin", "destination");
+        double maxPrice = 100.;
+        AdditionalCriteria other = new AdditionalCriteria(departure, maxPrice, duration, "origin", "destination");
 
         ComposedTrip forward = mock(ComposedTrip.class);
         ComposedTrip backward = mock(ComposedTrip.class);
 
-        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria)).thenReturn(forward);
-        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria)).thenReturn(backward);
+        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice)).thenReturn(forward);
+        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.)).thenReturn(backward);
 
         when(forward.getArrivalTime()).thenReturn(departure);
         when(backward.getDepartureTime()).thenReturn(returnDate);
@@ -127,8 +129,8 @@ public class OptimizerTest {
         ComposedTrip forward = mock(ComposedTrip.class);
         ComposedTrip backward = mock(ComposedTrip.class);
 
-        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria)).thenReturn(forward);
-        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria)).thenReturn(backward);
+        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice)).thenReturn(forward);
+        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.)).thenReturn(backward);
 
         when(forward.getArrivalTime()).thenReturn(departure);
         when(backward.getDepartureTime()).thenReturn(returnDate);
@@ -152,8 +154,8 @@ public class OptimizerTest {
         ComposedTrip forward = mock(ComposedTrip.class);
         ComposedTrip backward = mock(ComposedTrip.class);
 
-        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria)).thenReturn(forward);
-        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria)).thenReturn(backward);
+        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice)).thenReturn(forward);
+        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.)).thenReturn(backward);
 
         when(forward.getArrivalTime()).thenReturn(departure);
         when(backward.getDepartureTime()).thenReturn(returnDate);
