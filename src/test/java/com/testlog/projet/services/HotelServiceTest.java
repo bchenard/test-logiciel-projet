@@ -145,4 +145,28 @@ public class HotelServiceTest {
         }
         field.set(object, value);
     }
+
+    @Test
+    public void testLoadCityData_withEmptyMap() throws Exception {
+        HotelService hotelServiceSpy = spy(new HotelService());
+        setPrivateField(hotelServiceSpy, "cityData", Map.of());
+
+        List<Hotel> hotels = hotelServiceSpy.getForCity("AnyCity");
+        assertNotNull(hotels);
+        assertTrue(hotels.isEmpty(), "Expected no hotels when city data is empty");
+    }
+
+    @Test
+    public void testGetForCity_withAddress() throws Exception {
+        HotelService hotelServiceSpy = spy(new HotelService());
+
+        Object hotelInfo = createHotelInfo("Hotel A", 3, 100.0, "123 Main St", "48.8566", "2.3522");
+        Map<String, List<Object>> mockCityData = Map.of("Paris", List.of(hotelInfo));
+
+        setPrivateField(hotelServiceSpy, "cityData", mockCityData);
+
+        List<Hotel> hotels = hotelServiceSpy.getForCity("Paris");
+        assertEquals(1, hotels.size());
+        assertEquals("123 Main St", hotels.get(0).address());
+    }
 }
