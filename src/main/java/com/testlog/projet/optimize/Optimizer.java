@@ -30,8 +30,9 @@ public class Optimizer implements IOptimizer {
         String origin = other.originCity();
         String destination = other.destinationCity();
 
-        ComposedTrip forward = transportOptimizer.getOptimizedTrip(origin, destination);
-        ComposedTrip backward = transportOptimizer.getOptimizedTrip(destination, origin);
+        LocalDateTime returnDate = other.departureDate().plus(other.duration());
+        ComposedTrip forward = transportOptimizer.getOptimizedTrip(origin, destination, other.departureDate(), transportCriteria);
+        ComposedTrip backward = transportOptimizer.getOptimizedTrip(destination, origin, returnDate, transportCriteria);
 
         LocalDateTime arrival = forward.getArrivalTime();
         LocalDateTime departure = backward.getDepartureTime();
