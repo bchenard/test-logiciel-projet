@@ -7,6 +7,7 @@ import com.testlog.projet.services.TransportService;
 import com.testlog.projet.types.SimpleTrip;
 import com.testlog.projet.types.TransportationMode;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,16 +23,17 @@ public class TransportOptimizer implements ITransportOptimizer {
         if (transportCriteria.preferredMode().equals(TransportationMode.NOT_SPECIFIED)) {
             return Trips;
         }
+        
          return Trips.stream()
                  .filter(trip -> trip.mode() == transportCriteria.preferredMode())
                  .toList();
     }
-
     @Override
     public ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime date, TransportCriteria transportCriteria, Double maxPrice) {
         PriorityQueue<String> cities = new PriorityQueue<>();
+        boolean optimizeForDuration = true;
 
-        // Distances is the price to get to a city, trying to minimize it
+        // Distances is either the cost or duration to get to a city, trying to minimize it
         Map<String, Double> distances = new HashMap<>();
         Map<String, SimpleTrip> optimalPaths = new HashMap<>();
 
@@ -57,7 +59,11 @@ public class TransportOptimizer implements ITransportOptimizer {
 
             for (SimpleTrip trip : filterTransportCriteria(this.transportService.getForCity(city, date), transportCriteria)) {
                 String nextCity = trip.arrivalCity();
-                double newDistance = distance + trip.price();
+                Duration duration = Duration.between(trip.departureTime(), trip.arrivalTime());
+                double tripDuration = duration.toMinutes() / 60.0;
+
+                double newDistance = distance + (transportCriteria.preferMinPricesOverMinDuration() ? trip.price() : tripDuration);
+
 
                 if (!distances.containsKey(nextCity) || distances.get(nextCity) > newDistance) {
                     distances.put(nextCity, newDistance);
