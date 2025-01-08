@@ -40,6 +40,10 @@ public class CitySolver implements ICitySolver {
             solution.add(null);
         }
 
+        if (budget <= 0) {
+            return solution;
+        }
+
         MPVariable[][] vars = new MPVariable[nbDays][activityCount];
         for (int d = 0; d < nbDays; d++) {
             for (int a = 0; a < activityCount; a++) {

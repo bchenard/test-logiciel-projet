@@ -180,4 +180,15 @@ public class CitySolverIT {
         assertTrue(result.contains(activityA));
         assertFalse(result.contains(activityB));
     }
+
+    @Test
+    public void testSolve_withNegativeBudget() {
+        List<Activity> activities = List.of(activityA, activityB, activityC);
+
+        List<Activity> result = solver.solve(activities, 0, 2, -100);
+
+        assertEquals(2, result.size());
+        assertNull(result.get(0));
+        assertNull(result.get(1));
+    }
 }

@@ -31,7 +31,7 @@ public class Main {
         List<ActivityType> categories = List.of(ActivityType.CULTURE, ActivityType.CINEMA, ActivityType.SPORT, ActivityType.MUSIC);
         ActivityCriteria activityCriteria = new ActivityCriteria(50, categories);
 
-        LocalDateTime start = LocalDateTime.of(2024, 6, 3, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2025, 1, 8, 0, 0);
         Duration duration = Duration.ofDays(3);
         AdditionalCriteria additionalCriteria = new AdditionalCriteria(start, 1000, duration, "Paris", "Bordeaux");
 
