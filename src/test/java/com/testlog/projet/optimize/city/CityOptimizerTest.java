@@ -49,7 +49,7 @@ public class CityOptimizerTest {
     public void testGetTotalPrice_withoutElements() {
         Pair<Hotel, List<Activity>> pair = new Pair<>(hotelA, List.of());
 
-        assertEquals(100, cityOptimizer.getTotalPrice(pair));
+        assertEquals(100, cityOptimizer.getTotalPrice(pair, 1));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class CityOptimizerTest {
         List<Activity> activities = Arrays.asList(null, null, null);
         Pair<Hotel, List<Activity>> pair = new Pair<>(hotelA, activities);
 
-        assertEquals(100, cityOptimizer.getTotalPrice(pair));
+        assertEquals(100, cityOptimizer.getTotalPrice(pair, 1));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class CityOptimizerTest {
         List<Activity> activities = List.of(activityA);
         Pair<Hotel, List<Activity>> pair = new Pair<>(hotelA, activities);
 
-        assertEquals(150, cityOptimizer.getTotalPrice(pair));
+        assertEquals(150, cityOptimizer.getTotalPrice(pair, 1));
     }
 
     @Test
@@ -73,7 +73,15 @@ public class CityOptimizerTest {
         List<Activity> activities = Arrays.asList(null, null, activityA, null, activityB, null, null);
         Pair<Hotel, List<Activity>> pair = new Pair<>(hotelA, activities);
 
-        assertEquals(225, cityOptimizer.getTotalPrice(pair));
+        assertEquals(225, cityOptimizer.getTotalPrice(pair, 1));
+    }
+
+    @Test
+    public void testGetTotalPrice_withMultipleDays() {
+        List<Activity> activities = Arrays.asList(null, null, activityA, null, activityB, null, null);
+        Pair<Hotel, List<Activity>> pair = new Pair<>(hotelA, activities);
+
+        assertEquals(325, cityOptimizer.getTotalPrice(pair, 2));
     }
 
     @Test
@@ -82,7 +90,7 @@ public class CityOptimizerTest {
         Pair<Hotel, List<Activity>> b = new Pair<>(hotelB, List.of(activityA));
 
         HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
-        assertTrue(cityOptimizer.compare(a, b, hotelCriteria));
+        assertTrue(cityOptimizer.compare(a, b, hotelCriteria, 1));
     }
 
     @Test
@@ -91,31 +99,31 @@ public class CityOptimizerTest {
         Pair<Hotel, List<Activity>> b = new Pair<>(hotelB, List.of(activityA, activityB));
 
         HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
-        assertFalse(cityOptimizer.compare(a, b, hotelCriteria));
+        assertFalse(cityOptimizer.compare(a, b, hotelCriteria, 1));
     }
 
     @Test
     public void testCompare_withSameActivities_lowerPrice_preferMinPrice() {
         HotelCriteria hotelCriteria = new HotelCriteria(true, 0);
-        assertTrue(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+        assertTrue(cityOptimizer.compare(pairA, pairB, hotelCriteria, 1));
     }
 
     @Test
     public void testCompare_withSameActivities_higherPrice_preferMinPrice() {
         HotelCriteria hotelCriteria = new HotelCriteria(true, 0);
-        assertFalse(cityOptimizer.compare(pairB, pairA, hotelCriteria));
+        assertFalse(cityOptimizer.compare(pairB, pairA, hotelCriteria, 1));
     }
 
     @Test
     public void testCompare_withSameActivities_lowerPrice_preferMaxStars() {
         HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
-        assertFalse(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+        assertFalse(cityOptimizer.compare(pairA, pairB, hotelCriteria, 1));
     }
 
     @Test
     public void testCompare_withSameActivities_higherPrice_preferMaxStars() {
         HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
-        assertTrue(cityOptimizer.compare(pairB, pairA, hotelCriteria));
+        assertTrue(cityOptimizer.compare(pairB, pairA, hotelCriteria, 1));
     }
 
     @Test
@@ -129,7 +137,7 @@ public class CityOptimizerTest {
         Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
         Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
 
-        assertFalse(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+        assertFalse(cityOptimizer.compare(pairA, pairB, hotelCriteria, 1));
     }
 
     @Test
@@ -143,7 +151,7 @@ public class CityOptimizerTest {
         Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
         Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
 
-        assertTrue(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+        assertTrue(cityOptimizer.compare(pairA, pairB, hotelCriteria, 1));
     }
 
     @Test
@@ -157,7 +165,7 @@ public class CityOptimizerTest {
         Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
         Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
 
-        assertTrue(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+        assertTrue(cityOptimizer.compare(pairA, pairB, hotelCriteria, 1));
     }
 
     @Test
@@ -171,19 +179,19 @@ public class CityOptimizerTest {
         Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
         Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
 
-        assertFalse(cityOptimizer.compare(pairA, pairB, hotelCriteria));
+        assertFalse(cityOptimizer.compare(pairA, pairB, hotelCriteria, 1));
     }
 
     @Test
     public void testCompare_withEqualObjects_shouldReturnFirst_preferMinPrice() {
         HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
-        assertTrue(cityOptimizer.compare(pairA, pairA, hotelCriteria));
+        assertTrue(cityOptimizer.compare(pairA, pairA, hotelCriteria, 1));
     }
 
     @Test
     public void testCompare_withNullSecond_shouldReturnFirst_preferMaxStars() {
         HotelCriteria hotelCriteria = new HotelCriteria(true, 0);
-        assertTrue(cityOptimizer.compare(pairA, pairA, hotelCriteria));
+        assertTrue(cityOptimizer.compare(pairA, pairA, hotelCriteria, 1));
     }
 
 

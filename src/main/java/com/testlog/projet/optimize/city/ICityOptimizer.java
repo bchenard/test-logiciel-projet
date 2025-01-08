@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface ICityOptimizer {
     /**
-     * Returns the total price of a hotel and a list of activities.
+     * Returns the total price of a hotel over multiple days and a list of activities.
      */
-    double getTotalPrice(Pair<Hotel, List<Activity>> pair);
+    double getTotalPrice(Pair<Hotel, List<Activity>> pair, int nbDays);
 
     /**
      * Optimize a trip in a city.
