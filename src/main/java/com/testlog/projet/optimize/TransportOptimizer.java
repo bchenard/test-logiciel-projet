@@ -28,7 +28,7 @@ public class TransportOptimizer implements ITransportOptimizer {
     }
 
     @Override
-    public ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime Date, TransportCriteria transportCriteria) {
+    public ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime date, TransportCriteria transportCriteria) {
         PriorityQueue<String> cities = new PriorityQueue<>();
 
         // Distances is the price to get to a city, trying to minimize it
@@ -49,7 +49,7 @@ public class TransportOptimizer implements ITransportOptimizer {
 
             double distance = distances.get(city);
 
-            for (SimpleTrip trip : filterTransportCriteria(this.transportService.getForCity(city), transportCriteria)) {
+            for (SimpleTrip trip : filterTransportCriteria(this.transportService.getForCity(city, date), transportCriteria)) {
                 String nextCity = trip.arrivalCity();
                 double newDistance = distance + trip.price();
 

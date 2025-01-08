@@ -36,6 +36,8 @@ public class Optimizer implements IOptimizer {
 
         LocalDateTime arrival = forward.getArrivalTime();
         LocalDateTime departure = backward.getDepartureTime();
+        System.out.println(arrival);
+        System.out.println(departure);
 
         int startDay = arrival.getDayOfWeek().getValue() - 1;
         int nbDays = (int) arrival.until(departure, ChronoUnit.DAYS);
