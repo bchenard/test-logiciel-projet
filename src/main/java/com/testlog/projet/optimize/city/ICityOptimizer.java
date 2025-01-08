@@ -25,6 +25,7 @@ public interface ICityOptimizer {
      * @param activityCriteria criteria for the activities
      * @return Pair<Hotel, List < Activity>> where the list of activities is indexed by days since startDay.
      * If no activity is planned for a given day, the list will contain a null value.
+     * If no hotel is found, it will return null.
      */
     Pair<Hotel, List<Activity>> optimize(String city, int startDay, int nbDays, double budget, HotelCriteria hotelCriteria, ActivityCriteria activityCriteria);
 }

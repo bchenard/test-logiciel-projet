@@ -1,72 +1,67 @@
 package com.testlog.projet.optimize;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-
 import com.testlog.projet.ComposedTrip;
 import com.testlog.projet.services.ICityService;
 import com.testlog.projet.services.TransportService;
 import com.testlog.projet.types.SimpleTrip;
 
+import java.util.*;
+
 public class TransportOptimizer implements ITransportOptimizer {
-  private TransportService transportService;
+    private final TransportService transportService;
 
-  public TransportOptimizer(ICityService transportService) {
-    this.transportService = (TransportService) transportService;
-  }
-  @Override
-  public ComposedTrip getOptimizedTrip(String origin, String destination) {
-    PriorityQueue<String> cities = new PriorityQueue<>();
+    public TransportOptimizer(ICityService<SimpleTrip> transportService) {
+        this.transportService = (TransportService) transportService;
+    }
 
-    // Distances is the price to get to a city, trying to minimize it
-    Map<String, Double> distances = new HashMap<>();
-    Map<String, SimpleTrip> optimalPaths = new HashMap<>();
+    @Override
+    public ComposedTrip getOptimizedTrip(String origin, String destination) {
+        PriorityQueue<String> cities = new PriorityQueue<>();
 
-    distances.put(origin, 0.0);
-    cities.add(origin);
+        // Distances is the price to get to a city, trying to minimize it
+        Map<String, Double> distances = new HashMap<>();
+        Map<String, SimpleTrip> optimalPaths = new HashMap<>();
 
-    while (!cities.isEmpty()) {
-      String city = cities.poll();
+        distances.put(origin, 0.0);
+        cities.add(origin);
 
-      if (city.equals(destination)) {
-        // Found the destination
-        List<SimpleTrip> optimalTrips = reconstructOptimalPath(optimalPaths, destination);
-        return new ComposedTrip(optimalTrips);
-      }
+        while (!cities.isEmpty()) {
+            String city = cities.poll();
 
-      double distance = distances.get(city);
+            if (city.equals(destination)) {
+                // Found the destination
+                List<SimpleTrip> optimalTrips = reconstructOptimalPath(optimalPaths, destination);
+                return new ComposedTrip(optimalTrips);
+            }
 
-      for (SimpleTrip trip : this.transportService.getForCity(city)) {
-        String nextCity = trip.arrivalCity();
-        double newDistance = distance + trip.price();
+            double distance = distances.get(city);
 
-        if (!distances.containsKey(nextCity) || distances.get(nextCity) > newDistance) {
-          distances.put(nextCity, newDistance);
-          optimalPaths.put(nextCity, trip);
-          cities.add(nextCity);
+            for (SimpleTrip trip : this.transportService.getForCity(city)) {
+                String nextCity = trip.arrivalCity();
+                double newDistance = distance + trip.price();
+
+                if (!distances.containsKey(nextCity) || distances.get(nextCity) > newDistance) {
+                    distances.put(nextCity, newDistance);
+                    optimalPaths.put(nextCity, trip);
+                    cities.add(nextCity);
+                }
+            }
         }
-      }
+
+        // No path found, return an empty trip
+        return new ComposedTrip(new ArrayList<>());
     }
 
-    // No path found, return an empty trip
-    return new ComposedTrip(new ArrayList<>());
-  }
+    private List<SimpleTrip> reconstructOptimalPath(Map<String, SimpleTrip> optimalPaths, String destination) {
+        LinkedList<SimpleTrip> optimalTrips = new LinkedList<>();
+        SimpleTrip trip = optimalPaths.get(destination);
 
-  private List<SimpleTrip> reconstructOptimalPath(Map<String, SimpleTrip> optimalPaths, String destination) {
-    LinkedList<SimpleTrip> optimalTrips = new LinkedList<>();
-    SimpleTrip trip = optimalPaths.get(destination);
+        while (trip != null) {
+            optimalTrips.add(trip);
+            trip = optimalPaths.get(trip.departureCity());
+        }
 
-    while (trip != null) {
-      optimalTrips.add(trip);
-      trip = optimalPaths.get(trip.departureCity());
+        Collections.reverse(optimalTrips);
+        return optimalTrips;
     }
-
-    Collections.reverse(optimalTrips);
-    return optimalTrips;
-  }
 }

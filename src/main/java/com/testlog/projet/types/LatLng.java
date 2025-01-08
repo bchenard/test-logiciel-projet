@@ -12,6 +12,6 @@ public record LatLng(Double lat, Double lng) {
 
         double sqrtArg = 1 - Math.cos(dlat) + Math.cos(lat1) * Math.cos(lat2) * (1 - Math.cos(dlng));
 
-        return 2 * 6371.0 * Math.asin(Math.sqrt(sqrtArg) / 2);
+        return 2 * 6371.0 * Math.asin(Math.sqrt(sqrtArg / 2));
     }
 }

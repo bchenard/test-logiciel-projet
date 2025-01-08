@@ -23,18 +23,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        TransportService transportService = new TransportService();
-        HotelService hotelService = new HotelService();
-        ActivityService activityService = new ActivityService();
-
-        // TODO: To change once transport service takes transportService as parameter
-        TransportOptimizer transportOptimizer = new TransportOptimizer(transportService);
-
-        CitySolver citySolver = new CitySolver();
-        CityOptimizer cityOptimizer = new CityOptimizer(hotelService, activityService, citySolver);
-
-        Optimizer optimizer = new Optimizer(transportOptimizer, cityOptimizer);
-
+        Optimizer optimizer = getOptimizer();
 
         TransportCriteria transportCriteria = new TransportCriteria(TransportationMode.NOT_SPECIFIED, true);
         HotelCriteria hotelCriteria = new HotelCriteria(true, 3);
@@ -47,5 +36,18 @@ public class Main {
         AdditionalCriteria additionalCriteria = new AdditionalCriteria(start, 1000, duration, "Paris", "Bordeaux");
 
         Package solution = optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, additionalCriteria);
+    }
+
+    private static Optimizer getOptimizer() {
+        TransportService transportService = new TransportService();
+        HotelService hotelService = new HotelService();
+        ActivityService activityService = new ActivityService();
+
+        TransportOptimizer transportOptimizer = new TransportOptimizer(transportService);
+
+        CitySolver citySolver = new CitySolver();
+        CityOptimizer cityOptimizer = new CityOptimizer(hotelService, activityService, citySolver);
+
+        return new Optimizer(transportOptimizer, cityOptimizer);
     }
 }
