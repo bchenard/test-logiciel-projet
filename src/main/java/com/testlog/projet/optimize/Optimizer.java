@@ -43,7 +43,11 @@ public class Optimizer implements IOptimizer {
         double transportCost = forward.getPrice() + backward.getPrice();
         double newBudget = other.maxPrice() - transportCost;
         Pair<Hotel, List<Activity>> cityTrip;
-        cityTrip = cityOptimizer.optimize(destination,startDay, nbDays, newBudget, hotelCriteria, activityCriteria);
+        cityTrip = cityOptimizer.optimize(destination, startDay, nbDays, newBudget, hotelCriteria, activityCriteria);
+
+        if (cityTrip == null) {
+            return new Package(null, null, forward, backward, transportCost);
+        }
 
         double totalPrice = transportCost + cityOptimizer.getTotalPrice(cityTrip);
 

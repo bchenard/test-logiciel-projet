@@ -34,8 +34,8 @@ public class CityOptimizerTest {
     }
 
     // Hotel B has more stars than Hotel A, but Hotel A has a lower price
-    final Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel1", 100);
-    final Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 4, "Hotel2", 200);
+    final Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel1", 100, "Address A");
+    final Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 4, "Hotel2", 200, "Address B");
 
     final Activity activityA = new Activity("name", "address", "Bordeaux", new LatLng(1., 1.), ActivityType.CULTURE, 50., List.of(true, true, true, true, true, true, true));
     final Activity activityB = new Activity("name", "address", "Bordeaux", new LatLng(1.3, 1.3), ActivityType.CINEMA, 75., List.of(true, true, true, true, true, true, true));
@@ -123,8 +123,8 @@ public class CityOptimizerTest {
         HotelCriteria hotelCriteria = new HotelCriteria(true, 0);
 
         // Hotel B has lower stars than Hotel A
-        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 100);
-        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel2", 100);
+        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 100, "Address A");
+        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel2", 100, "Address B");
 
         Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
         Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
@@ -137,8 +137,8 @@ public class CityOptimizerTest {
         HotelCriteria hotelCriteria = new HotelCriteria(true, 0);
 
         // Hotel B has higher stars than Hotel A
-        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel1", 100);
-        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 100);
+        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel1", 100, "Address A");
+        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 100, "Address B");
 
         Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
         Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
@@ -151,8 +151,8 @@ public class CityOptimizerTest {
         HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
 
         // Hotel B is more expensive than Hotel A
-        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 100);
-        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 101);
+        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 100, "Address A");
+        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 101, "Address B");
 
         Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
         Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
@@ -165,8 +165,8 @@ public class CityOptimizerTest {
         HotelCriteria hotelCriteria = new HotelCriteria(false, 0);
 
         // Hotel B is less expensive than Hotel A
-        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 101);
-        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 100);
+        Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel1", 101, "Address A");
+        Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 2, "Hotel2", 100, "Address B");
 
         Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
         Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
