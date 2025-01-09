@@ -127,4 +127,19 @@ public class ComposedTripTest {
         assertTrue(actual.contains(first), "String representation should contain the first trip");
         assertTrue(actual.contains(second), "String representation should contain the second trip");
     }
+
+    @Test
+    public void testGetTrips_withValues() {
+        LocalDateTime departureTime = LocalDateTime.now();
+        LocalDateTime arrivalTime = LocalDateTime.now().plusHours(1);
+
+        SimpleTrip trip1 = new SimpleTrip("Paris", "Lyon", TransportationMode.TRAIN, 100, departureTime, arrivalTime);
+        SimpleTrip trip2 = new SimpleTrip("Lyon", "Bordeaux", TransportationMode.PLANE, 200, arrivalTime, arrivalTime.plusHours(1));
+        ComposedTrip composedTrip = new ComposedTrip(List.of(trip1, trip2));
+
+        List<SimpleTrip> actual = composedTrip.getTrips();
+        assertEquals(2, actual.size(), "List should contain 2 trips");
+        assertEquals(trip1, actual.get(0), "First trip should be the first trip added");
+        assertEquals(trip2, actual.get(1), "Second trip should be the second trip added");
+    }
 }
