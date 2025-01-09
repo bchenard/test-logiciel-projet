@@ -1,32 +1,47 @@
 package com.testlog.projet.services;
 
+import com.testlog.projet.services.io.IFileReader;
 import com.testlog.projet.types.Hotel;
 import com.testlog.projet.types.LatLng;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class HotelServiceTest {
 
+    private IFileReader fileReader;
+
+    private final String hotelA = "{\"name\":\"Hotel A\",\"stars\":4,\"price\":150.0,\"address\":\"Address A\",\"lat\":\"48.8566\",\"lon\":\"2.3522\"}";
+    private final String hotelB = "{\"name\":\"Hotel B\",\"stars\":5,\"price\":300.0,\"address\":\"Address B\",\"lat\":\"48.8584\",\"lon\":\"2.2945\"}";
+
+    @BeforeEach
+    public void setUp() {
+        fileReader = mock(IFileReader.class);
+    }
+
+    // IOException added ONLY for when(fileReader.readAll()). This is required for the test to execute.
     @Test
-    public void testGetForCity_withValidData() throws Exception {
-        HotelService hotelServiceSpy = spy(new HotelService());
+    public void testGetForCity_IOError() throws IOException {
+        when(fileReader.readAll(anyString())).thenThrow(new IOException());
 
-        Object hotelInfo1 = createHotelInfo("Hotel A", 4, 150.0, "Address A", "48.8566", "2.3522");
-        Object hotelInfo2 = createHotelInfo("Hotel B", 5, 300.0, "Address B", "48.8584", "2.2945");
+        Exception exception = assertThrows(RuntimeException.class, () -> new HotelService(fileReader));
+        assertTrue(exception.getMessage().contains("Failed to load city data from hotels.json"), "Wrong exception message");
+    }
 
-        Map<String, List<Object>> mockCityData = Map.of("Paris", List.of(hotelInfo1, hotelInfo2));
-        setPrivateField(hotelServiceSpy, "cityData", mockCityData);
+    @Test
+    public void testGetForCity_withMultipleHotels_checkFields() throws IOException {
+        when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelA + "," + hotelB + "]}");
+        HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = hotelServiceSpy.getForCity("Paris");
+        List<Hotel> hotels = service.getForCity("Paris");
 
-        assertNotNull(hotels);
         assertEquals(2, hotels.size());
 
         Hotel firstHotel = hotels.get(0);
@@ -45,128 +60,67 @@ public class HotelServiceTest {
     }
 
     @Test
-    public void testGetForCity_nonexistentCity() throws Exception {
-        HotelService hotelServiceSpy = spy(new HotelService());
+    public void testGetForCity_nonExistentCity() throws IOException {
+        when(fileReader.readAll(anyString())).thenReturn("{}");
+        HotelService service = new HotelService(fileReader);
 
-        setPrivateField(hotelServiceSpy, "cityData", Map.of());
+        List<Hotel> hotels = service.getForCity("NonexistentCity");
 
-        List<Hotel> hotels = hotelServiceSpy.getForCity("NonexistentCity");
-
-        assertNotNull(hotels);
         assertTrue(hotels.isEmpty());
     }
 
     @Test
-    public void testGetForCity_withEmptyData() throws Exception {
-        HotelService hotelServiceSpy = spy(new HotelService());
+    public void testGetForCity_withEmptyData() throws IOException {
+        when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[]}");
+        HotelService service = new HotelService(fileReader);
 
-        Map<String, List<Object>> mockCityData = Map.of("Paris", List.of());
-        setPrivateField(hotelServiceSpy, "cityData", mockCityData);
+        List<Hotel> hotels = service.getForCity("Paris");
 
-        List<Hotel> hotels = hotelServiceSpy.getForCity("Paris");
-
-        assertNotNull(hotels);
         assertTrue(hotels.isEmpty());
     }
 
     @Test
-    public void testGetForCity_invalidLatLon() throws Exception {
-        HotelService hotelServiceSpy = spy(new HotelService());
+    public void testGetForCity_invalidLatLon() throws IOException {
+        String invalid = "{\"name\":\"Invalid Hotel\",\"stars\":3,\"price\":100.0,\"address\":\"Invalid Address\",\"lat\":\"invalid-lat\",\"lon\":\"invalid-lon\"}";
+        when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + invalid + "]}");
+        HotelService service = new HotelService(fileReader);
 
-        Object hotelInfo = createHotelInfo("Invalid Hotel", 3, 100.0, "Invalid Address", "invalid-lat", "invalid-lon");
-
-        Map<String, List<Object>> mockCityData = Map.of("Paris", List.of(hotelInfo));
-        setPrivateField(hotelServiceSpy, "cityData", mockCityData);
-
-        Exception exception = assertThrows(NumberFormatException.class, () -> {
-            hotelServiceSpy.getForCity("Paris");
-        });
-
-        assertTrue(exception.getMessage().contains("For input string"));
+        assertThrows(NumberFormatException.class, () -> service.getForCity("Paris"));
     }
 
     @Test
-    public void testGetForCity_multipleCities() throws Exception {
-        HotelService hotelServiceSpy = spy(new HotelService());
+    public void testGetForCity_multipleCities() throws IOException {
+        String hotelC = "{\"name\":\"Hotel C\",\"stars\":3,\"price\":80.0,\"address\":\"Address C\",\"lat\":\"48.8606\",\"lon\":\"2.3376\"}";
+        when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelA + "," + hotelB + "],\"London\":[" + hotelC + "]}");
+        HotelService service = new HotelService(fileReader);
 
-        Object hotelInfo1 = createHotelInfo("Hotel A", 4, 150.0, "Address A", "48.8566", "2.3522");
-        Object hotelInfo2 = createHotelInfo("Hotel B", 5, 300.0, "Address B", "48.8584", "2.2945");
-        Object hotelInfo3 = createHotelInfo("Hotel C", 3, 80.0, "Address C", "48.8606", "2.3376");
+        List<Hotel> parisHotels = service.getForCity("Paris");
+        List<Hotel> londonHotels = service.getForCity("London");
 
-        Map<String, List<Object>> mockCityData = Map.of(
-                "Paris", List.of(hotelInfo1, hotelInfo2),
-                "London", List.of(hotelInfo3)
-        );
-        setPrivateField(hotelServiceSpy, "cityData", mockCityData);
-
-        List<Hotel> parisHotels = hotelServiceSpy.getForCity("Paris");
-        List<Hotel> londonHotels = hotelServiceSpy.getForCity("London");
-
-        assertNotNull(parisHotels);
-        assertEquals(2, parisHotels.size());
-
-        assertNotNull(londonHotels);
-        assertEquals(1, londonHotels.size());
-        assertEquals("Hotel C", londonHotels.get(0).name());
-    }
-
-    private Object createHotelInfo(String name, int stars, double price, String address, String lat, String lon) throws Exception {
-        Class<?> hotelInfoClass = Class.forName("com.testlog.projet.services.HotelService$HotelInfo");
-        Constructor<?> constructor = hotelInfoClass.getDeclaredConstructor();
-
-        if (!constructor.canAccess(null)) {
-            constructor.setAccessible(true);
-        }
-
-        Object hotelInfo = constructor.newInstance();
-
-        setField(hotelInfo, "name", name);
-        setField(hotelInfo, "stars", stars);
-        setField(hotelInfo, "price", price);
-        setField(hotelInfo, "address", address);
-        setField(hotelInfo, "lat", lat);
-        setField(hotelInfo, "lon", lon);
-
-        return hotelInfo;
-    }
-
-    private void setPrivateField(Object object, String fieldName, Object value) throws Exception {
-        Field field = object.getClass().getDeclaredField(fieldName);
-        if (!field.canAccess(object)) {
-            field.setAccessible(true);
-        }
-        field.set(object, value);
-    }
-
-    private void setField(Object object, String fieldName, Object value) throws Exception {
-        Field field = object.getClass().getDeclaredField(fieldName);
-        if (!field.canAccess(object)) {
-            field.setAccessible(true);
-        }
-        field.set(object, value);
+        assertEquals(2, parisHotels.size(), "Expected two hotels in Paris");
+        assertEquals(1, londonHotels.size(), "Expected one hotel in London");
+        assertEquals("Hotel C", londonHotels.getFirst().name(), "Wrong hotel name in London");
     }
 
     @Test
-    public void testLoadCityData_withEmptyMap() throws Exception {
-        HotelService hotelServiceSpy = spy(new HotelService());
-        setPrivateField(hotelServiceSpy, "cityData", Map.of());
+    public void testLoadCityData_withEmptyMap() throws IOException {
+        when(fileReader.readAll(anyString())).thenReturn("{}");
+        HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = hotelServiceSpy.getForCity("AnyCity");
-        assertNotNull(hotels);
+        List<Hotel> hotels = service.getForCity("AnyCity");
+
         assertTrue(hotels.isEmpty(), "Expected no hotels when city data is empty");
     }
 
     @Test
-    public void testGetForCity_withAddress() throws Exception {
-        HotelService hotelServiceSpy = spy(new HotelService());
-
-        Object hotelInfo = createHotelInfo("Hotel A", 3, 100.0, "123 Main St", "48.8566", "2.3522");
-        Map<String, List<Object>> mockCityData = Map.of("Paris", List.of(hotelInfo));
-
-        setPrivateField(hotelServiceSpy, "cityData", mockCityData);
+    public void testGetForCity_withAddress() throws IOException {
+        String hotelC = "{\"name\":\"Hotel A\",\"stars\":3,\"price\":100.0,\"address\":\"123 Main St\",\"lat\":\"48.8566\",\"lon\":\"2.3522\"}";
+        when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelC + "]}");
+        HotelService hotelServiceSpy = new HotelService(fileReader);
 
         List<Hotel> hotels = hotelServiceSpy.getForCity("Paris");
+
         assertEquals(1, hotels.size());
-        assertEquals("123 Main St", hotels.get(0).address());
+        assertEquals("123 Main St", hotels.getFirst().address());
     }
 }
