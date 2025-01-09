@@ -148,7 +148,7 @@ public class OptimizerTest {
     }
 
     @Test
-    public void testSolve_noHotel_shouldReturnOnlyTransport() {
+    public void testSolve_checkOptimizeCall() {
         ComposedTrip forward = mock(ComposedTrip.class);
         ComposedTrip backward = mock(ComposedTrip.class);
 
@@ -160,14 +160,13 @@ public class OptimizerTest {
         when(forward.getPrice()).thenReturn(100.);
         when(backward.getPrice()).thenReturn(200.);
 
-        when(cityOptimizer.optimize(anyString(), anyInt(), anyInt(), anyDouble(), any(), any())).thenReturn(null);
+        CityCriteria cityCriteria = new CityCriteria(1000., activityTypes, false, 3);
 
-        Package result = optimizer.solve(transportCriteria, cityCriteria, other);
+        Hotel h = new Hotel("hotel", new LatLng(0., 0.), 3, "hotel A", 100., "address");
+        when(cityOptimizer.optimize("destination", 2, 1, 700., cityCriteria, departure)).thenReturn(new Pair<>(h, List.of()));
 
-        assertNull(result.activities());
-        assertNull(result.hotel());
-        assertEquals(forward, result.firstTrip());
-        assertEquals(backward, result.returnTrip());
-        assertEquals(300., result.totalPrice());
+        optimizer.solve(transportCriteria, cityCriteria, other);
+
+        verify(cityOptimizer).optimize("destination", 2, 1, 700., cityCriteria, departure);
     }
 }
