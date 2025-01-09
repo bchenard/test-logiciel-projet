@@ -1,6 +1,6 @@
 package com.testlog.projet.optimize;
 
-import com.testlog.projet.ComposedTrip;
+import com.testlog.projet.types.ComposedTrip;
 import com.testlog.projet.criteria.TransportCriteria;
 import com.testlog.projet.services.ICityService;
 import com.testlog.projet.services.TransportService;

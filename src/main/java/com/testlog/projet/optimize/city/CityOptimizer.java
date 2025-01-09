@@ -43,10 +43,10 @@ public class CityOptimizer implements ICityOptimizer {
     }
 
     /**
-     * Returns the total price of a hotel and a list of activities. Null activities are ignored.
+     * Returns the total price of a hotel over multiple days and a list of activities. Null activities are ignored.
      */
-    public double getTotalPrice(Pair<Hotel, List<Activity>> pair) {
-        return pair.first().price() + pair.second().stream().filter(Objects::nonNull).mapToDouble(Activity::price).sum();
+    public double getTotalPrice(Pair<Hotel, List<Activity>> pair, int nbDays) {
+        return pair.first().price() * nbDays + pair.second().stream().filter(Objects::nonNull).mapToDouble(Activity::price).sum();
     }
 
     /**
@@ -62,7 +62,7 @@ public class CityOptimizer implements ICityOptimizer {
      * Does not care about minStars.
      * If 'a' and 'b' look the same, 'a' is considered better.
      */
-    boolean compare(Pair<Hotel, List<Activity>> a, Pair<Hotel, List<Activity>> b, HotelCriteria hotelCriteria) {
+    boolean compare(Pair<Hotel, List<Activity>> a, Pair<Hotel, List<Activity>> b, HotelCriteria hotelCriteria, int nbDays) {
         if (b == null) return true;
 
         List<Activity> activitiesA = a.second();
@@ -75,8 +75,8 @@ public class CityOptimizer implements ICityOptimizer {
         if (activityCountA > activityCountB) return true;
         if (activityCountA < activityCountB) return false;
 
-        double priceA = getTotalPrice(a);
-        double priceB = getTotalPrice(b);
+        double priceA = getTotalPrice(a, nbDays);
+        double priceB = getTotalPrice(b, nbDays);
         int starsA = a.first().stars();
         int starsB = b.first().stars();
 
@@ -105,7 +105,7 @@ public class CityOptimizer implements ICityOptimizer {
             // meaning no activity planned for the given date
             List<Activity> solution = citySolver.solve(nearActivities, startDay, nbDays, budget - hotel.price() * nbDays);
 
-            if (compare(new Pair<>(hotel, solution), optimal, hotelCriteria)) {
+            if (compare(new Pair<>(hotel, solution), optimal, hotelCriteria, nbDays)) {
                 optimal = new Pair<>(hotel, solution);
             }
         }

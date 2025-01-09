@@ -1,6 +1,6 @@
 package com.testlog.projet.optimize;
 
-import com.testlog.projet.ComposedTrip;
+import com.testlog.projet.types.ComposedTrip;
 import com.testlog.projet.criteria.ActivityCriteria;
 import com.testlog.projet.criteria.AdditionalCriteria;
 import com.testlog.projet.criteria.HotelCriteria;
@@ -36,8 +36,6 @@ public class Optimizer implements IOptimizer {
 
         LocalDateTime arrival = forward.getArrivalTime();
         LocalDateTime departure = backward.getDepartureTime();
-        System.out.println(arrival);
-        System.out.println(departure);
 
         int startDay = arrival.getDayOfWeek().getValue() - 1;
         int nbDays = (int) arrival.until(departure, ChronoUnit.DAYS);
@@ -48,6 +46,11 @@ public class Optimizer implements IOptimizer {
 
         double transportCost = forward.getPrice() + backward.getPrice();
         double newBudget = other.maxPrice() - transportCost;
+
+        if (newBudget < 0) {
+            return new Package(null, null, forward, backward, transportCost);
+        }
+
         Pair<Hotel, List<Activity>> cityTrip;
         cityTrip = cityOptimizer.optimize(destination, startDay, nbDays, newBudget, hotelCriteria, activityCriteria);
 
@@ -55,7 +58,7 @@ public class Optimizer implements IOptimizer {
             return new Package(null, null, forward, backward, transportCost);
         }
 
-        double totalPrice = transportCost + cityOptimizer.getTotalPrice(cityTrip);
+        double totalPrice = transportCost + cityOptimizer.getTotalPrice(cityTrip, nbDays);
 
         return new Package(cityTrip.second(), cityTrip.first(), forward, backward, totalPrice);
     }
