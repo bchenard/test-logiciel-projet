@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -197,62 +198,62 @@ public class CityOptimizerTest {
 
     @Test
     public void testOptimize_withNoActivities() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
-        when(activityService.getForCity(any())).thenReturn(List.of());
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of());
 
-        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()), LocalDateTime.now());
 
         verify(citySolver).solve(List.of(), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_withNoHotels() {
-        when(hotelService.getForCity(any())).thenReturn(List.of());
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of());
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
         when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(null, null, null));
 
         assertThrows(IllegalArgumentException.class, () -> {
-            cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
+            cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()), LocalDateTime.now());
         });
     }
 
     @Test
     public void testOptimize_withOneHotelAndOneActivity_noCategory() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA));
 
-        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()), LocalDateTime.now());
 
         verify(citySolver).solve(List.of(), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_withOneHotelAndOneActivity_withItsCategory() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA));
 
-        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)), LocalDateTime.now());
 
         verify(citySolver).solve(List.of(activityA), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_withMultipleHotelsAndActivities() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA, hotelB));
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA, hotelB));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
 
-        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)), LocalDateTime.now());
 
         verify(citySolver).solve(List.of(activityA, activityB), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_withTooHighStarsRequired() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
 
         assertThrows(IllegalArgumentException.class, () -> {
-            cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 5), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+            cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 5), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)), LocalDateTime.now());
         });
     }
 
@@ -260,43 +261,43 @@ public class CityOptimizerTest {
     public void testOptimize_withTooFarAwayActivity() {
         Activity farActivity = new Activity("name", "address", "Bordeaux", new LatLng(10., 10.), ActivityType.CULTURE, 50., List.of(true, true, true, true, true, true, true));
 
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
-        when(activityService.getForCity(any())).thenReturn(List.of(farActivity));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(farActivity));
 
-        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE)), LocalDateTime.now());
 
         verify(citySolver).solve(List.of(), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_checkSolveInput() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
         when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB, null));
 
-        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)), LocalDateTime.now());
 
         verify(citySolver).solve(List.of(activityA, activityB), 0, 2, 99999 - 100 * 2);
     }
 
     @Test
     public void testOptimize_checkSolveInput_withDifferentHotel() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelB));
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelB));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
         when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB, null));
 
-        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CINEMA)));
+        cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CINEMA)), LocalDateTime.now());
 
         verify(citySolver).solve(List.of(activityB), 0, 2, 99999 - 200 * 2);
     }
 
     @Test
     public void testOptimize_returnValue_whenOptimal() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA, hotelB));
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA, hotelB));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
         when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)), LocalDateTime.now());
 
         assertEquals(hotelA, result.first());
         assertEquals(2, result.second().size());
@@ -305,11 +306,11 @@ public class CityOptimizerTest {
 
     @Test
     public void testOptimize_returnValue_whenOptimal_withDifferentHotel() {
-        when(hotelService.getForCity(any())).thenReturn(List.of(hotelA, hotelB));
-        when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA, hotelB));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
         when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(activityA, activityB));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(false, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(false, 3), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)), LocalDateTime.now());
 
         assertEquals(hotelB, result.first());
         assertEquals(2, result.second().size());
