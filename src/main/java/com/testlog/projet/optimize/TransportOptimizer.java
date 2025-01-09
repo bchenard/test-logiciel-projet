@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class TransportOptimizer implements ITransportOptimizer {
-    private final TransportService transportService;
+    private final ICityService<SimpleTrip> transportService;
 
     public TransportOptimizer(ICityService<SimpleTrip> transportService) {
-        this.transportService = (TransportService) transportService;
+        this.transportService = transportService;
     }
 
     @Override

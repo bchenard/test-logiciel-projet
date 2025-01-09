@@ -6,6 +6,7 @@ import com.testlog.projet.types.Activity;
 import com.testlog.projet.types.Hotel;
 import com.testlog.projet.types.Pair;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ICityOptimizer {
@@ -27,5 +28,5 @@ public interface ICityOptimizer {
      * If no activity is planned for a given day, the list will contain a null value.
      * If no hotel is found, it will return null.
      */
-    Pair<Hotel, List<Activity>> optimize(String city, int startDay, int nbDays, double budget, HotelCriteria hotelCriteria, ActivityCriteria activityCriteria);
+    Pair<Hotel, List<Activity>> optimize(String city, int startDay, int nbDays, double budget, HotelCriteria hotelCriteria, ActivityCriteria activityCriteria, LocalDateTime date);
 }

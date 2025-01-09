@@ -10,6 +10,7 @@ import com.testlog.projet.types.LatLng;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class ActivityService implements ICityService<Activity> {
     }
 
     @Override
-    public List<Activity> getForCity(String city) {
+    public List<Activity> getForCity(String city, LocalDateTime date) {
         List<Activity> activities = new ArrayList<>();
         List<ActivityInfo> activityInfos = cityData.getOrDefault(city, List.of());
 

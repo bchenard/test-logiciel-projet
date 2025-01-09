@@ -9,6 +9,7 @@ import com.testlog.projet.types.LatLng;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class HotelService implements ICityService<Hotel> {
     }
 
     @Override
-    public List<Hotel> getForCity(String city) {
+    public List<Hotel> getForCity(String city, LocalDateTime date) {
         List<Hotel> hotels = new ArrayList<>();
         List<HotelInfo> hotelInfos = cityData.getOrDefault(city, List.of());
 

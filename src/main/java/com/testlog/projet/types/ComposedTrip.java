@@ -43,6 +43,10 @@ public class ComposedTrip {
         return trips.getLast().arrivalTime();
     }
 
+    public List<SimpleTrip> getTrips() {
+        return trips;
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("{\n");

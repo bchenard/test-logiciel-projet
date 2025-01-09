@@ -8,6 +8,7 @@ import com.testlog.projet.types.Hotel;
 import com.testlog.projet.types.LatLng;
 import com.testlog.projet.types.Pair;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -92,9 +93,9 @@ public class CityOptimizer implements ICityOptimizer {
     }
 
     @Override
-    public Pair<Hotel, List<Activity>> optimize(String city, int startDay, int nbDays, double budget, HotelCriteria hotelCriteria, ActivityCriteria activityCriteria) {
-        List<Hotel> hotels = filterHotels(hotelService.getForCity(city), hotelCriteria);
-        List<Activity> activities = activityService.getForCity(city);
+    public Pair<Hotel, List<Activity>> optimize(String city, int startDay, int nbDays, double budget, HotelCriteria hotelCriteria, ActivityCriteria activityCriteria, LocalDateTime date) {
+        List<Hotel> hotels = filterHotels(hotelService.getForCity(city, date), hotelCriteria);
+        List<Activity> activities = activityService.getForCity(city, date);
 
         Pair<Hotel, List<Activity>> optimal = null;
 

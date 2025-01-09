@@ -25,33 +25,6 @@ public class TransportService implements ICityService<SimpleTrip> {
         this.cityData = loadCityData();
     }
 
-    @Override
-    public List<SimpleTrip> getForCity(String city) {
-        // The original overridden method (for today's date)
-        List<SimpleTrip> trips = new ArrayList<>();
-        LocalDate today = LocalDate.now();
-        List<ConnectionInfo> connections = cityData.getOrDefault(city, List.of());
-
-        for (ConnectionInfo connection : connections) {
-            for (Schedule schedule : connection.getHours()) {
-                LocalDateTime departureTime = parseTime(today, schedule.getStart());
-                LocalDateTime arrivalTime = parseTime(today, schedule.getEnd());
-                trips.add(new SimpleTrip(
-                        city,
-                        connection.getDestination(),
-                        TransportationMode.valueOf(connection.getMode().toUpperCase()),
-                        connection.getPrice(),
-                        departureTime,
-                        arrivalTime
-                ));
-            }
-        }
-        return trips;
-    }
-
-    /**
-     * New method that allows specifying a date using LocalDateTime.
-     */
     public List<SimpleTrip> getForCity(String city, LocalDateTime dateTime) {
         List<SimpleTrip> trips = new ArrayList<>();
         List<ConnectionInfo> connections = cityData.getOrDefault(city, List.of());

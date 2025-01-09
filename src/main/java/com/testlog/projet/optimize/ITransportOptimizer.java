@@ -8,6 +8,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ITransportOptimizer {
-
     ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime Date, TransportCriteria transportCriteria, Double maxPrice);
 }
