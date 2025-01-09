@@ -18,6 +18,7 @@
   ],
   "Bordeaux": [
     {"destination": "Paris", "mode": "plane", "price": 110.0, "hours": [{"start": "06:30", "end": "07:45"}, {"start": "16:00", "end": "17:15"}]},
+    {"destination": "Paris", "mode": "train", "price": 120.0, "hours": [{"start": "06:30", "end": "07:45"}, {"start": "16:00", "end": "17:15"}]},
     {"destination": "Nantes", "mode": "train", "price": 50.0, "hours": [{"start": "07:00", "end": "08:15"}, {"start": "17:30", "end": "18:45"}]},
     {"destination": "Rennes", "mode": "train", "price": 85.0, "hours": [{"start": "08:00", "end": "11:00"}, {"start": "13:00", "end": "16:00"}]}
   ],

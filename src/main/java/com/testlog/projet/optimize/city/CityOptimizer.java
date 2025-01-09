@@ -101,6 +101,10 @@ public class CityOptimizer implements ICityOptimizer {
         for (Hotel hotel : hotels) {
             List<Activity> nearActivities = filterActivities(activities, activityCriteria, hotel.coordinates());
 
+            // Check if hotel is in budget
+            double hotelPrice = hotel.price() * nbDays;
+            if (hotelPrice > budget) continue;
+
             // The following object can contain null multiple times
             // meaning no activity planned for the given date
             List<Activity> solution = citySolver.solve(nearActivities, startDay, nbDays, budget - hotel.price() * nbDays);
@@ -109,7 +113,9 @@ public class CityOptimizer implements ICityOptimizer {
                 optimal = new Pair<>(hotel, solution);
             }
         }
-
+        if (optimal == null) {
+            throw new IllegalArgumentException("No solution found : no hotel available within the budget");
+        }
         return optimal;
     }
 }

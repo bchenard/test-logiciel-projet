@@ -56,32 +56,27 @@ public class TransportService implements ICityService<SimpleTrip> {
      * New method that allows specifying a date using LocalDateTime.
      */
     public List<SimpleTrip> getForCity(String city, LocalDateTime dateTime) {
-        // 1. Get trips for "today" using the overridden method
-        List<SimpleTrip> trips = getForCity(city);
+        List<SimpleTrip> trips = new ArrayList<>();
+        List<ConnectionInfo> connections = cityData.getOrDefault(city, List.of());
 
-        // 2. Calculate the offset between today's start and the specified date
-        LocalDateTime todayStart = LocalDate.now().atStartOfDay();
-        LocalDateTime targetStart = dateTime.toLocalDate().atStartOfDay();
-        long dayOffset = ChronoUnit.DAYS.between(todayStart, targetStart);
-        long timeOffsetSeconds = ChronoUnit.SECONDS.between(todayStart, dateTime);
+        for (ConnectionInfo connection : connections) {
+            for (Schedule schedule : connection.getHours()) {
+                LocalDateTime departureTime = parseTime(dateTime.toLocalDate(), schedule.getStart());
+                LocalDateTime arrivalTime = parseTime(dateTime.toLocalDate(), schedule.getEnd());
 
-        // 3. Create a new list with shifted times
-        List<SimpleTrip> adjustedTrips = new ArrayList<>();
-        for (SimpleTrip trip : trips) {
-            LocalDateTime shiftedDeparture = trip.departureTime().plusDays(dayOffset).plusSeconds(timeOffsetSeconds % (24 * 60 * 60));
-            LocalDateTime shiftedArrival = trip.arrivalTime().plusDays(dayOffset).plusSeconds(timeOffsetSeconds % (24 * 60 * 60));
-
-            adjustedTrips.add(new SimpleTrip(
-                    trip.departureCity(),
-                    trip.arrivalCity(),
-                    trip.mode(),
-                    trip.price(),
-                    shiftedDeparture,
-                    shiftedArrival
-            ));
+                if (!departureTime.isBefore(dateTime)) {
+                    trips.add(new SimpleTrip(
+                            city,
+                            connection.getDestination(),
+                            TransportationMode.valueOf(connection.getMode().toUpperCase()),
+                            connection.getPrice(),
+                            departureTime,
+                            arrivalTime
+                    ));
+                }
+            }
         }
-
-        return adjustedTrips;
+        return trips;
     }
 
     private Map<String, List<ConnectionInfo>> loadCityData() {
