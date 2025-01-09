@@ -211,9 +211,9 @@ public class CityOptimizerTest {
         when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
         when(citySolver.solve(any(), anyInt(), anyInt(), anyDouble())).thenReturn(Arrays.asList(null, null, null));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
-
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> {
+            cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 3), new ActivityCriteria(300, List.of()));
+        });
     }
 
     @Test
@@ -251,9 +251,9 @@ public class CityOptimizerTest {
         when(hotelService.getForCity(any())).thenReturn(List.of(hotelA));
         when(activityService.getForCity(any())).thenReturn(List.of(activityA, activityB));
 
-        Pair<Hotel, List<Activity>> result = cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 5), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
-
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> {
+            cityOptimizer.optimize("Bordeaux", 0, 2, 99999, new HotelCriteria(true, 5), new ActivityCriteria(300, List.of(ActivityType.CULTURE, ActivityType.CINEMA)));
+        });
     }
 
     @Test
