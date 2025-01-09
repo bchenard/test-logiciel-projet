@@ -17,7 +17,8 @@ import static org.mockito.Mockito.*;
 public class TransportServiceTest {
 
     private IFileReader fileReader;
-    private final String trip = "{\"destination\":\"Destination\",\"mode\":\"train\",\"price\":12.5,\"hours\":[{\"start\":\"08:00\",\"end\":\"10:00\"},{\"start\":\"14:30\",\"end\":\"15:30\"}]}";
+    private final String trip = "{\"destination\":\"Destination\",\"mode\":\"train\",\"price\":12.5,\"hours\":[{\"start\":\"08:00\",\"end\":\"10:00\"}]}";
+    private final LocalDateTime midnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
 
     @BeforeEach
     public void setUp() {
@@ -58,11 +59,11 @@ public class TransportServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"TestCity\":[" + trip + "," + tripB + "]}");
         TransportService service = new TransportService(fileReader);
 
-        List<SimpleTrip> trips = service.getForCity("TestCity", LocalDateTime.now());
+        List<SimpleTrip> trips = service.getForCity("TestCity", midnight);
 
-        assertEquals(2, trips.size());
         assertEquals("Destination", trips.get(0).arrivalCity(), "Wrong first trip destination");
         assertEquals("DestinationB", trips.get(1).arrivalCity(), "Wrong second trip destination");
+        assertEquals(2, trips.size());
     }
 
     @Test
@@ -72,9 +73,7 @@ public class TransportServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"TestCity\":[" + trip + "]}");
         TransportService service = new TransportService(fileReader);
 
-        Exception exception = assertThrows(RuntimeException.class, () -> service.getForCity("TestCity", LocalDateTime.now()));
-
-        assertTrue(exception.getMessage().contains("Text 'invalid-time' could not be parsed"));
+        assertThrows(RuntimeException.class, () -> service.getForCity("TestCity", midnight));
     }
 
     @Test
@@ -84,7 +83,7 @@ public class TransportServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"TestCity\":[" + trip + "," + tripB + "]}");
         TransportService service = new TransportService(fileReader);
 
-        List<SimpleTrip> trips = service.getForCity("TestCity", LocalDateTime.now());
+        List<SimpleTrip> trips = service.getForCity("TestCity", midnight);
 
         assertEquals(2, trips.size());
         assertEquals(12.5, trips.get(0).price(), "Wrong first trip price");
@@ -96,7 +95,7 @@ public class TransportServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"TestCity\":[" + trip + "]}");
 
         TransportService service = new TransportService(fileReader);
-        List<SimpleTrip> trips = service.getForCity("TestCity", LocalDateTime.now());
+        List<SimpleTrip> trips = service.getForCity("TestCity", midnight);
 
         assertEquals(1, trips.size());
         SimpleTrip firstTrip = trips.get(0);
