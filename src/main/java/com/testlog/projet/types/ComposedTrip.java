@@ -45,12 +45,11 @@ public class ComposedTrip {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-
+        StringBuilder stringBuilder = new StringBuilder("{\n");
         for (SimpleTrip trip : trips) {
-            stringBuilder.append(trip).append("\n");
+            stringBuilder.append("  ").append(trip).append("\n");
         }
-
+        stringBuilder.append("}");
         return stringBuilder.toString();
     }
 }

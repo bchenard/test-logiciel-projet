@@ -41,12 +41,8 @@ public class Optimizer implements IOptimizer {
         int nbDays = (int) arrival.until(departure, ChronoUnit.DAYS);
 
 
-        System.out.println(startDay);
-        System.out.println(nbDays);
-
         double transportCost = forward.getPrice() + backward.getPrice();
         double newBudget = other.maxPrice() - transportCost;
-        System.out.println(newBudget);
         if (newBudget < 0) {
             return new Package(null, null, forward, backward, transportCost);
         }
