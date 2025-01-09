@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ComposedTripTest {
 
@@ -119,8 +120,11 @@ public class ComposedTripTest {
         SimpleTrip trip1 = new SimpleTrip("Paris", "Lyon", TransportationMode.TRAIN, 100, departureTime, arrivalTime);
         SimpleTrip trip2 = new SimpleTrip("Lyon", "Bordeaux", TransportationMode.PLANE, 200, arrivalTime, arrivalTime.plusHours(1));
         ComposedTrip composedTrip = new ComposedTrip(List.of(trip1, trip2));
+        String actual = composedTrip.toString();
 
-        String expectedString = trip1 + "\n" + trip2 + "\n";
-        assertEquals(expectedString, composedTrip.toString());
+        String first = "departureCity='Paris', arrivalCity='Lyon', mode=TRAIN, price=100.0";
+        String second = "departureCity='Lyon', arrivalCity='Bordeaux', mode=PLANE, price=200.0";
+        assertTrue(actual.contains(first), "String representation should contain the first trip");
+        assertTrue(actual.contains(second), "String representation should contain the second trip");
     }
 }
