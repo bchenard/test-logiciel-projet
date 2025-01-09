@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +34,7 @@ public class ActivityServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{}");
         ActivityService service = new ActivityService(fileReader);
 
-        List<Activity> activities = service.getForCity("NoSuchCity", LocalDateTime.now());
+        List<Activity> activities = service.getForCity("NoSuchCity", any());
 
         assertTrue(activities.isEmpty());
     }
@@ -45,7 +44,7 @@ public class ActivityServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Rennes\":[]}");
         ActivityService service = new ActivityService(fileReader);
 
-        List<Activity> activities = service.getForCity("Rennes", LocalDateTime.now());
+        List<Activity> activities = service.getForCity("Rennes", any());
 
         assertTrue(activities.isEmpty());
     }
@@ -56,7 +55,7 @@ public class ActivityServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Rennes\":[" + activity + "," + activityB + "]}");
         ActivityService service = new ActivityService(fileReader);
 
-        List<Activity> activities = service.getForCity("Rennes", LocalDateTime.now());
+        List<Activity> activities = service.getForCity("Rennes", any());
 
         assertEquals(2, activities.size());
         assertEquals("Salle de sport Rennes", activities.get(0).name(), "Wrong first activity name");
@@ -70,7 +69,7 @@ public class ActivityServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Rennes\":[" + activity + "]}");
         ActivityService service = new ActivityService(fileReader);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> service.getForCity("Rennes", LocalDateTime.now()));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> service.getForCity("Rennes", any()));
 
         assertTrue(exception.getMessage().contains("For input string"));
     }
@@ -81,7 +80,7 @@ public class ActivityServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Rennes\":[" + activity + "]}");
         ActivityService service = new ActivityService(fileReader);
 
-        assertThrows(IllegalArgumentException.class, () -> service.getForCity("Rennes", LocalDateTime.now()));
+        assertThrows(IllegalArgumentException.class, () -> service.getForCity("Rennes", any()));
     }
 
     @Test
@@ -91,7 +90,7 @@ public class ActivityServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Rennes\":[" + activity + "," + activityB + "]}");
         ActivityService service = new ActivityService(fileReader);
 
-        List<Activity> activities = service.getForCity("Rennes", LocalDateTime.now());
+        List<Activity> activities = service.getForCity("Rennes", any());
 
         assertEquals(2, activities.size());
         assertEquals(12.5, activities.get(0).price(), "Wrong first activity price");
@@ -103,10 +102,10 @@ public class ActivityServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Rennes\":[" + activity + "]}");
 
         ActivityService service = new ActivityService(fileReader);
-        List<Activity> activities = service.getForCity("Rennes", LocalDateTime.now());
+        List<Activity> activities = service.getForCity("Rennes", any());
 
         assertEquals(1, activities.size());
-        Activity firstActivity = activities.get(0);
+        Activity firstActivity = activities.getFirst();
         assertEquals("Rennes", firstActivity.city(), "Wrong city");
         assertEquals(12.5, firstActivity.price(), "Wrong price");
         assertEquals("Salle de sport Rennes", firstActivity.name(), "Wrong name");

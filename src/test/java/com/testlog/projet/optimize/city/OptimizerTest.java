@@ -58,14 +58,14 @@ public class OptimizerTest {
         when(forward.getPrice()).thenReturn(100.);
         when(backward.getPrice()).thenReturn(200.);
 
-        when(cityOptimizer.optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria)).thenReturn(cityTrip);
+        when(cityOptimizer.optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria, any())).thenReturn(cityTrip);
         when(cityOptimizer.getTotalPrice(any(), anyInt())).thenReturn(50.);
 
         optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, other);
 
         verify(transportOptimizer).getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice);
         verify(transportOptimizer).getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.);
-        verify(cityOptimizer).optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria);
+        verify(cityOptimizer).optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria, any());
         verify(cityOptimizer).getTotalPrice(cityTrip, 1);
     }
 
@@ -87,14 +87,14 @@ public class OptimizerTest {
         when(forward.getPrice()).thenReturn(100.);
         when(backward.getPrice()).thenReturn(200.);
 
-        when(cityOptimizer.optimize("destination", 2, 2, 700., hotelCriteria, activityCriteria)).thenReturn(cityTrip);
+        when(cityOptimizer.optimize("destination", 2, 2, 700., hotelCriteria, activityCriteria, LocalDateTime.now())).thenReturn(cityTrip);
         when(cityOptimizer.getTotalPrice(any(), anyInt())).thenReturn(50.);
 
         optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, other);
 
         verify(transportOptimizer).getOptimizedTrip("origin", "destination", departure, transportCriteria, maxPrice);
         verify(transportOptimizer).getOptimizedTrip("destination", "origin", returnDate, transportCriteria, maxPrice - 100.);
-        verify(cityOptimizer).optimize("destination", 2, 2, 700., hotelCriteria, activityCriteria);
+        verify(cityOptimizer).optimize("destination", 2, 2, 700., hotelCriteria, activityCriteria, any());
         verify(cityOptimizer).getTotalPrice(cityTrip, 2);
     }
 
@@ -137,7 +137,7 @@ public class OptimizerTest {
         when(forward.getPrice()).thenReturn(100.);
         when(backward.getPrice()).thenReturn(200.);
 
-        when(cityOptimizer.optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria)).thenReturn(cityTrip);
+        when(cityOptimizer.optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria, any())).thenReturn(cityTrip);
         when(cityOptimizer.getTotalPrice(any(), anyInt())).thenReturn(50.);
 
         Package result = optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, other);
@@ -162,7 +162,7 @@ public class OptimizerTest {
         when(forward.getPrice()).thenReturn(100.);
         when(backward.getPrice()).thenReturn(200.);
 
-        when(cityOptimizer.optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria)).thenReturn(null);
+        when(cityOptimizer.optimize("destination", 2, 1, 700., hotelCriteria, activityCriteria, any())).thenReturn(null);
 
         Package result = optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, other);
 

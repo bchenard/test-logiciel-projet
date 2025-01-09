@@ -7,10 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -40,11 +40,11 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelA + "," + hotelB + "]}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = service.getForCity("Paris", LocalDateTime.now());
+        List<Hotel> hotels = service.getForCity("Paris", any());
 
         assertEquals(2, hotels.size());
 
-        Hotel firstHotel = hotels.get(0);
+        Hotel firstHotel = hotels.getFirst();
         assertEquals("Paris", firstHotel.city());
         assertEquals("Hotel A", firstHotel.name());
         assertEquals(4, firstHotel.stars());
@@ -64,7 +64,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = service.getForCity("NonexistentCity", LocalDateTime.now());
+        List<Hotel> hotels = service.getForCity("NonexistentCity", any());
 
         assertTrue(hotels.isEmpty());
     }
@@ -74,7 +74,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[]}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = service.getForCity("Paris", LocalDateTime.now());
+        List<Hotel> hotels = service.getForCity("Paris", any());
 
         assertTrue(hotels.isEmpty());
     }
@@ -85,7 +85,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + invalid + "]}");
         HotelService service = new HotelService(fileReader);
 
-        assertThrows(NumberFormatException.class, () -> service.getForCity("Paris", LocalDateTime.now()));
+        assertThrows(NumberFormatException.class, () -> service.getForCity("Paris", any()));
     }
 
     @Test
@@ -94,12 +94,12 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelA + "," + hotelB + "],\"London\":[" + hotelC + "]}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> parisHotels = service.getForCity("Paris", LocalDateTime.now());
-        List<Hotel> londonHotels = service.getForCity("London", LocalDateTime.now());
+        List<Hotel> parisHotels = service.getForCity("Paris", any());
+        List<Hotel> londonHotels = service.getForCity("London", any());
 
         assertEquals(2, parisHotels.size(), "Expected two hotels in Paris");
         assertEquals(1, londonHotels.size(), "Expected one hotel in London");
-        assertEquals("Hotel C", londonHotels.get(0).name(), "Wrong hotel name in London");
+        assertEquals("Hotel C", londonHotels.getFirst().name(), "Wrong hotel name in London");
     }
 
     @Test
@@ -107,7 +107,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = service.getForCity("AnyCity", LocalDateTime.now());
+        List<Hotel> hotels = service.getForCity("AnyCity", any());
 
         assertTrue(hotels.isEmpty(), "Expected no hotels when city data is empty");
     }
@@ -118,7 +118,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelC + "]}");
         HotelService hotelServiceSpy = new HotelService(fileReader);
 
-        List<Hotel> hotels = hotelServiceSpy.getForCity("Paris", LocalDateTime.now());
+        List<Hotel> hotels = hotelServiceSpy.getForCity("Paris", any());
 
         assertEquals(1, hotels.size());
         assertEquals("123 Main St", hotels.getFirst().address());
