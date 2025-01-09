@@ -19,72 +19,53 @@ public class TransportOptimizer implements ITransportOptimizer {
 
     @Override
     public ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime date, TransportCriteria transportCriteria, Double maxPrice) {
-        PriorityQueue<String> cities = new PriorityQueue<>();
-        Map<String, Double> distances = new HashMap<>();
-        Map<String, Double> durations = new HashMap<>();
-        Map<String, SimpleTrip> optimalPaths = new HashMap<>();
+        List<List<SimpleTrip>> allPaths = new ArrayList<>();
+        findAllPaths(origin, destination, date, transportCriteria, new ArrayList<>(), allPaths, new HashSet<>());
 
-        distances.put(origin, 0.0);
-        durations.put(origin, 0.0);
-        cities.add(origin);
+        List<SimpleTrip> optimalPath = null;
+        double optimalValue = Double.MAX_VALUE;
 
-        while (!cities.isEmpty()) {
-            String city = cities.poll();
+        for (List<SimpleTrip> path : allPaths) {
+            double totalPrice = path.stream().mapToDouble(SimpleTrip::price).sum();
+            double totalDuration = path.stream().mapToDouble(this::calculateDuration).sum();
 
-            if (city.equals(destination)) {
-                List<SimpleTrip> optimalTrips = reconstructOptimalPath(optimalPaths, destination);
-                ComposedTrip composedTrip = new ComposedTrip(optimalTrips);
+            if (totalPrice > maxPrice) continue;
 
-                if (composedTrip.getPrice() <= maxPrice) {
-                    return composedTrip;
-                } else {
-                    throw new IllegalArgumentException("No trips available within the budget");
-                }
-            }
-
-            double distance = distances.get(city);
-            double duration = durations.get(city);
-
-            for (SimpleTrip trip : filterTransportCriteria(this.transportService.getForCity(city, date), transportCriteria)) {
-                String nextCity = trip.arrivalCity();
-                double newDistance = distance + trip.price();
-                double newDuration = duration + calculateDuration(trip);
-
-                boolean shouldUpdate = transportCriteria.preferMinPricesOverMinDuration()
-                        ? (!distances.containsKey(nextCity) || distances.get(nextCity) > newDistance)
-                        : (!durations.containsKey(nextCity) || durations.get(nextCity) > newDuration);
-
-                if (shouldUpdate) {
-                    distances.put(nextCity, newDistance);
-                    durations.put(nextCity, newDuration);
-                    optimalPaths.put(nextCity, trip);
-                    cities.add(nextCity);
-                    date = trip.arrivalTime();
-                }
-
-                // Update the date to the arrival time of the current trip
-
+            double currentValue = transportCriteria.preferMinPricesOverMinDuration() ? totalPrice : totalDuration;
+            if (currentValue < optimalValue) {
+                optimalValue = currentValue;
+                optimalPath = path;
             }
         }
 
-        return new ComposedTrip(new ArrayList<>());
+        if (optimalPath == null) {
+            throw new IllegalArgumentException("No trips available within the budget");
+        }
+
+        return new ComposedTrip(optimalPath);
+    }
+
+    private void findAllPaths(String currentCity, String destination, LocalDateTime date, TransportCriteria transportCriteria, List<SimpleTrip> currentPath, List<List<SimpleTrip>> allPaths, Set<String> visitedCities) {
+        if (currentCity.equals(destination)) {
+            allPaths.add(new ArrayList<>(currentPath));
+            return;
+        }
+
+        visitedCities.add(currentCity);
+
+        for (SimpleTrip trip : filterTransportCriteria(this.transportService.getForCity(currentCity, date), transportCriteria)) {
+            if (visitedCities.contains(trip.arrivalCity()) || trip.departureTime().isBefore(date)) continue;
+
+            currentPath.add(trip);
+            findAllPaths(trip.arrivalCity(), destination, trip.arrivalTime(), transportCriteria, currentPath, allPaths, visitedCities);
+            currentPath.removeLast();
+        }
+
+        visitedCities.remove(currentCity);
     }
 
     private double calculateDuration(SimpleTrip trip) {
         return (double) java.time.Duration.between(trip.departureTime(), trip.arrivalTime()).toMinutes();
-    }
-
-    private List<SimpleTrip> reconstructOptimalPath(Map<String, SimpleTrip> optimalPaths, String destination) {
-        LinkedList<SimpleTrip> optimalTrips = new LinkedList<>();
-        SimpleTrip trip = optimalPaths.get(destination);
-
-        while (trip != null) {
-            optimalTrips.add(trip);
-            trip = optimalPaths.get(trip.departureCity());
-        }
-
-        Collections.reverse(optimalTrips);
-        return optimalTrips;
     }
 
     private List<SimpleTrip> filterTransportCriteria(List<SimpleTrip> trips, TransportCriteria transportCriteria) {
