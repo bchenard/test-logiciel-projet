@@ -9,6 +9,5 @@ import java.util.List;
 
 public interface ITransportOptimizer {
 
-    List<SimpleTrip> filterTransportCriteria(List<SimpleTrip> Trips, TransportCriteria transportCriteria);
     ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime Date, TransportCriteria transportCriteria, Double maxPrice);
 }

@@ -9,7 +9,6 @@ import com.testlog.projet.types.TransportationMode;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TransportOptimizer implements ITransportOptimizer {
     private final TransportService transportService;
@@ -18,57 +17,61 @@ public class TransportOptimizer implements ITransportOptimizer {
         this.transportService = (TransportService) transportService;
     }
 
-    public List<SimpleTrip> filterTransportCriteria(List<SimpleTrip> Trips, TransportCriteria transportCriteria) {
-        if (transportCriteria.preferredMode().equals(TransportationMode.NOT_SPECIFIED)) {
-            return Trips;
-        }
-         return Trips.stream()
-                 .filter(trip -> trip.mode() == transportCriteria.preferredMode())
-                 .toList();
-    }
-
     @Override
     public ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime date, TransportCriteria transportCriteria, Double maxPrice) {
         PriorityQueue<String> cities = new PriorityQueue<>();
-
-        // Distances is the price to get to a city, trying to minimize it
         Map<String, Double> distances = new HashMap<>();
+        Map<String, Double> durations = new HashMap<>();
         Map<String, SimpleTrip> optimalPaths = new HashMap<>();
 
         distances.put(origin, 0.0);
+        durations.put(origin, 0.0);
         cities.add(origin);
 
         while (!cities.isEmpty()) {
             String city = cities.poll();
 
             if (city.equals(destination)) {
-                // Found the destination
                 List<SimpleTrip> optimalTrips = reconstructOptimalPath(optimalPaths, destination);
                 ComposedTrip composedTrip = new ComposedTrip(optimalTrips);
 
                 if (composedTrip.getPrice() <= maxPrice) {
                     return composedTrip;
                 } else {
-                    throw new IllegalArgumentException("No trips available");
+                    throw new IllegalArgumentException("No trips available within the budget");
                 }
             }
 
             double distance = distances.get(city);
+            double duration = durations.get(city);
 
             for (SimpleTrip trip : filterTransportCriteria(this.transportService.getForCity(city, date), transportCriteria)) {
                 String nextCity = trip.arrivalCity();
                 double newDistance = distance + trip.price();
+                double newDuration = duration + calculateDuration(trip);
 
-                if (!distances.containsKey(nextCity) || distances.get(nextCity) > newDistance) {
+                boolean shouldUpdate = transportCriteria.preferMinPricesOverMinDuration()
+                        ? (!distances.containsKey(nextCity) || distances.get(nextCity) > newDistance)
+                        : (!durations.containsKey(nextCity) || durations.get(nextCity) > newDuration);
+
+                if (shouldUpdate) {
                     distances.put(nextCity, newDistance);
+                    durations.put(nextCity, newDuration);
                     optimalPaths.put(nextCity, trip);
                     cities.add(nextCity);
+                    date = trip.arrivalTime();
                 }
+
+                // Update the date to the arrival time of the current trip
+
             }
         }
 
-        // No path found, return an empty trip
         return new ComposedTrip(new ArrayList<>());
+    }
+
+    private double calculateDuration(SimpleTrip trip) {
+        return (double) java.time.Duration.between(trip.departureTime(), trip.arrivalTime()).toMinutes();
     }
 
     private List<SimpleTrip> reconstructOptimalPath(Map<String, SimpleTrip> optimalPaths, String destination) {
@@ -82,5 +85,14 @@ public class TransportOptimizer implements ITransportOptimizer {
 
         Collections.reverse(optimalTrips);
         return optimalTrips;
+    }
+
+    private List<SimpleTrip> filterTransportCriteria(List<SimpleTrip> trips, TransportCriteria transportCriteria) {
+        if (transportCriteria.preferredMode().equals(TransportationMode.NOT_SPECIFIED)) {
+            return trips;
+        }
+        return trips.stream()
+                .filter(trip -> trip.mode() == transportCriteria.preferredMode())
+                .toList();
     }
 }
