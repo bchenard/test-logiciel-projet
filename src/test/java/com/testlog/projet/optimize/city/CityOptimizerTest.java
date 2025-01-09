@@ -14,8 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CityOptimizerTest {
     @Mock
@@ -336,5 +335,29 @@ public class CityOptimizerTest {
         assertEquals(hotelB, result.first());
         assertEquals(2, result.second().size());
         assertEquals(List.of(activityA, activityB), result.second());
+    }
+
+    @Test
+    public void testOptimize_withSameBudget_asHotel() {
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
+
+        CityCriteria criteria = new CityCriteria(200, List.of(ActivityType.CULTURE, ActivityType.CINEMA), true, 3);
+
+        cityOptimizer.optimize("Bordeaux", 0, 2, 200, criteria, LocalDateTime.now());
+
+        verify(citySolver, times(1)).solve(any(), anyInt(), anyInt(), anyDouble());
+    }
+
+    @Test
+    public void testOptimize_withTooLowBudget() {
+        when(hotelService.getForCity(any(), any())).thenReturn(List.of(hotelA));
+        when(activityService.getForCity(any(), any())).thenReturn(List.of(activityA, activityB));
+
+        CityCriteria criteria = new CityCriteria(200, List.of(ActivityType.CULTURE, ActivityType.CINEMA), true, 3);
+
+        assertThrows(IllegalArgumentException.class, () -> cityOptimizer.optimize("Bordeaux", 0, 2, 199, criteria, LocalDateTime.now()));
+
+        verify(citySolver, never()).solve(any(), anyInt(), anyInt(), anyDouble());
     }
 }
