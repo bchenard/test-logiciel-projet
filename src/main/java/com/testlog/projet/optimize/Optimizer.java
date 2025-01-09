@@ -1,9 +1,8 @@
 package com.testlog.projet.optimize;
 
+import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.types.ComposedTrip;
-import com.testlog.projet.criteria.ActivityCriteria;
 import com.testlog.projet.criteria.AdditionalCriteria;
-import com.testlog.projet.criteria.HotelCriteria;
 import com.testlog.projet.criteria.TransportCriteria;
 import com.testlog.projet.optimize.city.ICityOptimizer;
 import com.testlog.projet.types.Activity;
@@ -26,7 +25,7 @@ public class Optimizer implements IOptimizer {
     }
 
     @Override
-    public Package solve(TransportCriteria transportCriteria, HotelCriteria hotelCriteria, ActivityCriteria activityCriteria, AdditionalCriteria other) {
+    public Package solve(TransportCriteria transportCriteria, CityCriteria cityCriteria, AdditionalCriteria other) {
         String origin = other.originCity();
         String destination = other.destinationCity();
 
@@ -48,7 +47,7 @@ public class Optimizer implements IOptimizer {
         }
 
         Pair<Hotel, List<Activity>> cityTrip;
-        cityTrip = cityOptimizer.optimize(destination, startDay, nbDays, newBudget, hotelCriteria, activityCriteria, arrival);
+        cityTrip = cityOptimizer.optimize(destination, startDay, nbDays, newBudget, cityCriteria, arrival);
 
         if (cityTrip == null) {
             return new Package(null, null, forward, backward, transportCost);

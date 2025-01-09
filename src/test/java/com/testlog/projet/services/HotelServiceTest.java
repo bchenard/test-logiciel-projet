@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +41,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelA + "," + hotelB + "]}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = service.getForCity("Paris", any());
+        List<Hotel> hotels = service.getForCity("Paris", LocalDateTime.now());
 
         assertEquals(2, hotels.size());
 
@@ -64,7 +65,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = service.getForCity("NonexistentCity", any());
+        List<Hotel> hotels = service.getForCity("NonexistentCity", LocalDateTime.now());
 
         assertTrue(hotels.isEmpty());
     }
@@ -74,7 +75,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[]}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = service.getForCity("Paris", any());
+        List<Hotel> hotels = service.getForCity("Paris", LocalDateTime.now());
 
         assertTrue(hotels.isEmpty());
     }
@@ -85,7 +86,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + invalid + "]}");
         HotelService service = new HotelService(fileReader);
 
-        assertThrows(NumberFormatException.class, () -> service.getForCity("Paris", any()));
+        assertThrows(NumberFormatException.class, () -> service.getForCity("Paris", LocalDateTime.now()));
     }
 
     @Test
@@ -94,8 +95,8 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelA + "," + hotelB + "],\"London\":[" + hotelC + "]}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> parisHotels = service.getForCity("Paris", any());
-        List<Hotel> londonHotels = service.getForCity("London", any());
+        List<Hotel> parisHotels = service.getForCity("Paris", LocalDateTime.now());
+        List<Hotel> londonHotels = service.getForCity("London", LocalDateTime.now());
 
         assertEquals(2, parisHotels.size(), "Expected two hotels in Paris");
         assertEquals(1, londonHotels.size(), "Expected one hotel in London");
@@ -107,7 +108,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{}");
         HotelService service = new HotelService(fileReader);
 
-        List<Hotel> hotels = service.getForCity("AnyCity", any());
+        List<Hotel> hotels = service.getForCity("AnyCity", LocalDateTime.now());
 
         assertTrue(hotels.isEmpty(), "Expected no hotels when city data is empty");
     }
@@ -118,7 +119,7 @@ public class HotelServiceTest {
         when(fileReader.readAll(anyString())).thenReturn("{\"Paris\":[" + hotelC + "]}");
         HotelService hotelServiceSpy = new HotelService(fileReader);
 
-        List<Hotel> hotels = hotelServiceSpy.getForCity("Paris", any());
+        List<Hotel> hotels = hotelServiceSpy.getForCity("Paris", LocalDateTime.now());
 
         assertEquals(1, hotels.size());
         assertEquals("123 Main St", hotels.getFirst().address());

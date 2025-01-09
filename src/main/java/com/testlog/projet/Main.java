@@ -1,9 +1,8 @@
 package com.testlog.projet;
 
 
-import com.testlog.projet.criteria.ActivityCriteria;
+import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.criteria.AdditionalCriteria;
-import com.testlog.projet.criteria.HotelCriteria;
 import com.testlog.projet.criteria.TransportCriteria;
 import com.testlog.projet.optimize.Optimizer;
 import com.testlog.projet.optimize.TransportOptimizer;
@@ -27,16 +26,15 @@ public class Main {
         Optimizer optimizer = getOptimizer();
 
         TransportCriteria transportCriteria = new TransportCriteria(TransportationMode.TRAIN, true);
-        HotelCriteria hotelCriteria = new HotelCriteria(false, 3);
 
         List<ActivityType> categories = List.of(ActivityType.CULTURE, ActivityType.CINEMA, ActivityType.SPORT, ActivityType.MUSIC);
-        ActivityCriteria activityCriteria = new ActivityCriteria(50, categories);
+        CityCriteria cityCriteria = new CityCriteria(50, categories, false, 3);
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 8, 0, 0);
         Duration duration = Duration.ofDays(10);
-        AdditionalCriteria additionalCriteria = new AdditionalCriteria(start, 500, duration, "Paris", "Bordeaux");
+        AdditionalCriteria additionalCriteria = new AdditionalCriteria(start, 1200, duration, "Paris", "Bordeaux");
 
-        Package solution = optimizer.solve(transportCriteria, hotelCriteria, activityCriteria, additionalCriteria);
+        Package solution = optimizer.solve(transportCriteria, cityCriteria, additionalCriteria);
         System.out.println("Forfait proposé :\n" + solution.toString());
     }
 

@@ -1,7 +1,6 @@
 package com.testlog.projet.optimize.city;
 
-import com.testlog.projet.criteria.ActivityCriteria;
-import com.testlog.projet.criteria.HotelCriteria;
+import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.services.ICityService;
 import com.testlog.projet.types.Activity;
 import com.testlog.projet.types.Hotel;
@@ -27,19 +26,19 @@ public class CityOptimizer implements ICityOptimizer {
     /**
      * Remove hotels that do not meet the criteria.
      */
-    private List<Hotel> filterHotels(List<Hotel> hotels, HotelCriteria criteria) {
+    private List<Hotel> filterHotels(List<Hotel> hotels, CityCriteria criteria) {
         return hotels.stream()
-                .filter((h) -> h.stars() >= criteria.minStars())
+                .filter((h) -> h.stars() >= criteria.hotelMinStars())
                 .toList();
     }
 
     /**
      * Remove activities that are too far away from the hotel or not in the right category.
      */
-    private List<Activity> filterActivities(List<Activity> activities, ActivityCriteria criteria, LatLng hotelCoords) {
+    private List<Activity> filterActivities(List<Activity> activities, CityCriteria criteria, LatLng hotelCoordinates) {
         return activities.stream()
-                .filter((a) -> hotelCoords.distance(a.coordinates()) <= criteria.maxDistance())
-                .filter((a) -> criteria.categories().contains(a.type()))
+                .filter((a) -> hotelCoordinates.distance(a.coordinates()) <= criteria.maxActivityDistance())
+                .filter((a) -> criteria.activityCategories().contains(a.type()))
                 .toList();
     }
 
@@ -47,14 +46,19 @@ public class CityOptimizer implements ICityOptimizer {
      * Returns the total price of a hotel over multiple days and a list of activities. Null activities are ignored.
      */
     public double getTotalPrice(Pair<Hotel, List<Activity>> pair, int nbDays) {
-        return pair.first().price() * nbDays + pair.second().stream().filter(Objects::nonNull).mapToDouble(Activity::price).sum();
+        return pair.first().price() * nbDays + pair.second().stream()
+                .filter(Objects::nonNull)
+                .mapToDouble(Activity::price)
+                .sum();
     }
 
     /**
      * Count the number of activities in a list. Null values are ignored.
      */
     private double countActivities(List<Activity> activities) {
-        return activities.stream().filter(Objects::nonNull).count();
+        return activities.stream()
+                .filter(Objects::nonNull)
+                .count();
     }
 
     /**
@@ -63,7 +67,7 @@ public class CityOptimizer implements ICityOptimizer {
      * Does not care about minStars.
      * If 'a' and 'b' look the same, 'a' is considered better.
      */
-    boolean compare(Pair<Hotel, List<Activity>> a, Pair<Hotel, List<Activity>> b, HotelCriteria hotelCriteria, int nbDays) {
+    boolean compare(Pair<Hotel, List<Activity>> a, Pair<Hotel, List<Activity>> b, CityCriteria criteria, int nbDays) {
         if (b == null) return true;
 
         List<Activity> activitiesA = a.second();
@@ -81,7 +85,7 @@ public class CityOptimizer implements ICityOptimizer {
         int starsA = a.first().stars();
         int starsB = b.first().stars();
 
-        if (hotelCriteria.preferMinPricesOverMaxStars()) {
+        if (criteria.preferHotelWithMinPricesOverMaxStars()) {
             if (priceA < priceB) return true;
             if (priceA > priceB) return false;
             return a.first().stars() >= b.first().stars();
@@ -93,14 +97,14 @@ public class CityOptimizer implements ICityOptimizer {
     }
 
     @Override
-    public Pair<Hotel, List<Activity>> optimize(String city, int startDay, int nbDays, double budget, HotelCriteria hotelCriteria, ActivityCriteria activityCriteria, LocalDateTime date) {
-        List<Hotel> hotels = filterHotels(hotelService.getForCity(city, date), hotelCriteria);
+    public Pair<Hotel, List<Activity>> optimize(String city, int startDay, int nbDays, double budget, CityCriteria cityCriteria, LocalDateTime date) {
+        List<Hotel> hotels = filterHotels(hotelService.getForCity(city, date), cityCriteria);
         List<Activity> activities = activityService.getForCity(city, date);
 
         Pair<Hotel, List<Activity>> optimal = null;
 
         for (Hotel hotel : hotels) {
-            List<Activity> nearActivities = filterActivities(activities, activityCriteria, hotel.coordinates());
+            List<Activity> nearActivities = filterActivities(activities, cityCriteria, hotel.coordinates());
 
             // Check if hotel is in budget
             double hotelPrice = hotel.price() * nbDays;
@@ -110,7 +114,7 @@ public class CityOptimizer implements ICityOptimizer {
             // meaning no activity planned for the given date
             List<Activity> solution = citySolver.solve(nearActivities, startDay, nbDays, budget - hotel.price() * nbDays);
 
-            if (compare(new Pair<>(hotel, solution), optimal, hotelCriteria, nbDays)) {
+            if (compare(new Pair<>(hotel, solution), optimal, cityCriteria, nbDays)) {
                 optimal = new Pair<>(hotel, solution);
             }
         }
