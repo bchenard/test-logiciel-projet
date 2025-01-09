@@ -12,6 +12,7 @@ import com.testlog.projet.optimize.city.CitySolver;
 import com.testlog.projet.services.ActivityService;
 import com.testlog.projet.services.HotelService;
 import com.testlog.projet.services.TransportService;
+import com.testlog.projet.services.io.FileReader;
 import com.testlog.projet.types.ActivityType;
 import com.testlog.projet.types.Package;
 import com.testlog.projet.types.TransportationMode;
@@ -40,9 +41,11 @@ public class Main {
     }
 
     private static Optimizer getOptimizer() {
-        TransportService transportService = new TransportService();
-        HotelService hotelService = new HotelService();
-        ActivityService activityService = new ActivityService();
+        FileReader sharedReader = new FileReader();
+
+        TransportService transportService = new TransportService(sharedReader);
+        HotelService hotelService = new HotelService(sharedReader);
+        ActivityService activityService = new ActivityService(sharedReader);
 
         TransportOptimizer transportOptimizer = new TransportOptimizer(transportService);
 
