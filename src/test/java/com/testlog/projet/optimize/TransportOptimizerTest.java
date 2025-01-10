@@ -1,8 +1,7 @@
-package com.testlog.projet.optimize.city;
+package com.testlog.projet.optimize;
 
 import com.testlog.projet.criteria.AdditionalCriteria;
 import com.testlog.projet.criteria.TransportCriteria;
-import com.testlog.projet.optimize.TransportOptimizer;
 import com.testlog.projet.services.ICityService;
 import com.testlog.projet.types.ComposedTrip;
 import com.testlog.projet.types.SimpleTrip;

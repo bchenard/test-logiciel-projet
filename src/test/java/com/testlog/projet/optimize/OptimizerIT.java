@@ -1,10 +1,10 @@
-package com.testlog.projet.optimize.city;
+package com.testlog.projet.optimize;
 
 import com.testlog.projet.criteria.AdditionalCriteria;
 import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.criteria.TransportCriteria;
-import com.testlog.projet.optimize.Optimizer;
-import com.testlog.projet.optimize.TransportOptimizer;
+import com.testlog.projet.optimize.city.CityOptimizer;
+import com.testlog.projet.optimize.city.CitySolver;
 import com.testlog.projet.services.ActivityService;
 import com.testlog.projet.services.HotelService;
 import com.testlog.projet.services.TransportService;

@@ -109,4 +109,16 @@ public class TransportServiceTest {
         assertEquals(expectedDepart1, firstTrip.departureTime(), "Wrong departure time");
         assertEquals(expectedArrive1, firstTrip.arrivalTime(), "Wrong arrival time");
     }
+
+    @Test
+    public void testGetForCity_secondSimpleTrip_beforeDateTimeArgument() throws IOException {
+        when(fileReader.readAll(anyString())).thenReturn("{\"TestCity\":[" + trip + "]}");
+
+        LocalDateTime beforeMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59));
+
+        TransportService service = new TransportService(fileReader);
+        List<SimpleTrip> trips = service.getForCity("TestCity", beforeMidnight);
+
+        assertEquals(0, trips.size());
+    }
 }

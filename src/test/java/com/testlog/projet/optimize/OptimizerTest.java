@@ -1,10 +1,9 @@
-package com.testlog.projet.optimize.city;
+package com.testlog.projet.optimize;
 
 import com.testlog.projet.criteria.AdditionalCriteria;
 import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.criteria.TransportCriteria;
-import com.testlog.projet.optimize.ITransportOptimizer;
-import com.testlog.projet.optimize.Optimizer;
+import com.testlog.projet.optimize.city.ICityOptimizer;
 import com.testlog.projet.types.Package;
 import com.testlog.projet.types.*;
 import org.junit.jupiter.api.BeforeEach;

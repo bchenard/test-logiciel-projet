@@ -8,9 +8,7 @@ import com.testlog.projet.types.TransportationMode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class TransportOptimizer implements ITransportOptimizer {
     private final ICityService<SimpleTrip> transportService;
@@ -22,7 +20,7 @@ public class TransportOptimizer implements ITransportOptimizer {
     @Override
     public ComposedTrip getOptimizedTrip(String origin, String destination, LocalDateTime date, TransportCriteria transportCriteria, Double maxPrice) {
         List<List<SimpleTrip>> allPaths = new ArrayList<>();
-        findAllPaths(origin, destination, date, transportCriteria, new ArrayList<>(), allPaths, new HashSet<>());
+        findAllPaths(origin, destination, date, transportCriteria, new ArrayList<>(), allPaths);
 
         List<SimpleTrip> optimalPath = null;
         double optimalValue = Double.MAX_VALUE;
@@ -47,23 +45,16 @@ public class TransportOptimizer implements ITransportOptimizer {
         return new ComposedTrip(optimalPath);
     }
 
-    private void findAllPaths(String currentCity, String destination, LocalDateTime date, TransportCriteria transportCriteria, List<SimpleTrip> currentPath, List<List<SimpleTrip>> allPaths, Set<String> visitedCities) {
+    private void findAllPaths(String currentCity, String destination, LocalDateTime date, TransportCriteria transportCriteria, List<SimpleTrip> currentPath, List<List<SimpleTrip>> allPaths) {
         if (currentCity.equals(destination)) {
             allPaths.add(new ArrayList<>(currentPath));
             return;
         }
-
-        visitedCities.add(currentCity);
-
         for (SimpleTrip trip : filterTransportCriteria(this.transportService.getForCity(currentCity, date), transportCriteria)) {
-            if (visitedCities.contains(trip.arrivalCity()) || trip.departureTime().isBefore(date)) continue;
-
             currentPath.add(trip);
-            findAllPaths(trip.arrivalCity(), destination, trip.arrivalTime(), transportCriteria, currentPath, allPaths, visitedCities);
+            findAllPaths(trip.arrivalCity(), destination, trip.arrivalTime(), transportCriteria, currentPath, allPaths);
             currentPath.removeLast();
         }
-
-        visitedCities.remove(currentCity);
     }
 
     private double calculateDuration(SimpleTrip trip) {
