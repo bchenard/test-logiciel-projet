@@ -148,4 +148,15 @@ public class TransportOptimizerTest {
         assertEquals(List.of(forwardTripTrain), resultForward.getTrips());
         assertEquals(List.of(backwardTripTrain), resultBackward.getTrips());
     }
+
+    @Test
+    public void testGetOptimizedTrip_withTotalPrice_equalBudget() {
+        SimpleTrip trip = new SimpleTrip("origin", "destination", TransportationMode.TRAIN, maxPrice, departure, departure.plusHours(2));
+        when(transportService.getForCity("origin", departure)).thenReturn(List.of(trip));
+
+        ComposedTrip result = transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteriaTrain, maxPrice);
+
+        assertEquals(List.of(trip), result.getTrips());
+
+    }
 }

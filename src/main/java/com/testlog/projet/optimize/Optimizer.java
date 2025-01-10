@@ -39,7 +39,7 @@ public class Optimizer implements IOptimizer {
 
         double transportCost = forward.getPrice() + backward.getPrice();
         double newBudget = other.maxPrice() - transportCost;
-        if (newBudget < 0) {
+        if (newBudget <= 0) {
             return new Package(null, null, forward, backward, transportCost);
         }
 

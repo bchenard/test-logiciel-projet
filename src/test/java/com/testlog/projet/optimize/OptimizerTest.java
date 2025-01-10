@@ -166,4 +166,25 @@ public class OptimizerTest {
 
         verify(cityOptimizer).optimize("destination", 2, 1, 700., cityCriteria, departure);
     }
+
+    @Test
+    public void testSolve_withZeroBudgetForActivity_shouldNotCallOptimize() {
+        ComposedTrip forward = mock(ComposedTrip.class);
+        ComposedTrip backward = mock(ComposedTrip.class);
+
+        when(transportOptimizer.getOptimizedTrip("origin", "destination", departure, transportCriteria, 300.)).thenReturn(forward);
+        when(transportOptimizer.getOptimizedTrip("destination", "origin", returnDate, transportCriteria, 200.)).thenReturn(backward);
+
+        when(forward.getArrivalTime()).thenReturn(departure);
+        when(backward.getDepartureTime()).thenReturn(returnDate);
+        when(forward.getPrice()).thenReturn(100.);
+        when(backward.getPrice()).thenReturn(200.);
+
+        CityCriteria cityCriteria = new CityCriteria(0., activityTypes, false, 3);
+        AdditionalCriteria other = new AdditionalCriteria(departure, 300, duration, "origin", "destination");
+
+        optimizer.solve(transportCriteria, cityCriteria, other);
+
+        verify(cityOptimizer, never()).optimize(anyString(), anyInt(), anyInt(), anyDouble(), any(), any());
+    }
 }
