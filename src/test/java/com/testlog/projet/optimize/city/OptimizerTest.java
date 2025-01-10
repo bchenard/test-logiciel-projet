@@ -1,6 +1,5 @@
 package com.testlog.projet.optimize.city;
 
-import com.testlog.projet.types.ComposedTrip;
 import com.testlog.projet.criteria.AdditionalCriteria;
 import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.criteria.TransportCriteria;
@@ -22,6 +21,14 @@ import static org.mockito.Mockito.*;
 
 public class OptimizerTest {
 
+    final LocalDateTime departure = LocalDateTime.parse("2025-01-08T08:00:00"); // Wednesday
+    final Duration duration = Duration.ofDays(1);
+    final LocalDateTime returnDate = departure.plus(duration);
+    final List<ActivityType> activityTypes = List.of(ActivityType.CULTURE, ActivityType.MUSIC);
+    final TransportCriteria transportCriteria = new TransportCriteria(TransportationMode.TRAIN, true);
+    final CityCriteria cityCriteria = new CityCriteria(1000., activityTypes, true, 3);
+    final double maxPrice = 1000.;
+    final AdditionalCriteria other = new AdditionalCriteria(departure, maxPrice, duration, "origin", "destination");
     ITransportOptimizer transportOptimizer;
     ICityOptimizer cityOptimizer;
     Optimizer optimizer;
@@ -32,15 +39,6 @@ public class OptimizerTest {
         cityOptimizer = mock(ICityOptimizer.class);
         optimizer = new Optimizer(transportOptimizer, cityOptimizer);
     }
-
-    final LocalDateTime departure = LocalDateTime.parse("2025-01-08T08:00:00"); // Wednesday
-    final Duration duration = Duration.ofDays(1);
-    final LocalDateTime returnDate = departure.plus(duration);
-    final List<ActivityType> activityTypes = List.of(ActivityType.CULTURE, ActivityType.MUSIC);
-    final TransportCriteria transportCriteria = new TransportCriteria(TransportationMode.TRAIN, true);
-    final CityCriteria cityCriteria = new CityCriteria(1000., activityTypes, true, 3);
-    final double maxPrice = 1000.;
-    final AdditionalCriteria other = new AdditionalCriteria(departure, maxPrice, duration, "origin", "destination");
 
     @Test
     public void testSolve_calls() {

@@ -1,8 +1,8 @@
 package com.testlog.projet;
 
 
-import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.criteria.AdditionalCriteria;
+import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.criteria.TransportCriteria;
 import com.testlog.projet.optimize.Optimizer;
 import com.testlog.projet.optimize.TransportOptimizer;

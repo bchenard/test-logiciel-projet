@@ -17,6 +17,13 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 public class CityOptimizerTest {
+    // Hotel B has more stars than Hotel A, but Hotel A has a lower price
+    final Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel1", 100, "Address A");
+    final Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 4, "Hotel2", 200, "Address B");
+    final Activity activityA = new Activity("name", "address", "Bordeaux", new LatLng(1., 1.), ActivityType.CULTURE, 50., List.of(true, true, true, true, true, true, true));
+    final Activity activityB = new Activity("name", "address", "Bordeaux", new LatLng(1.3, 1.3), ActivityType.CINEMA, 75., List.of(true, true, true, true, true, true, true));
+    final Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
+    final Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
     @Mock
     ICityService<Hotel> hotelService;
     @Mock
@@ -24,6 +31,7 @@ public class CityOptimizerTest {
     @Mock
     ICitySolver citySolver;
 
+    // Distance between hotel A and activity B is 47.171
     CityOptimizer cityOptimizer;
 
     @BeforeEach
@@ -31,18 +39,6 @@ public class CityOptimizerTest {
         MockitoAnnotations.openMocks(this);
         cityOptimizer = new CityOptimizer(hotelService, activityService, citySolver);
     }
-
-    // Hotel B has more stars than Hotel A, but Hotel A has a lower price
-    final Hotel hotelA = new Hotel("Bordeaux", new LatLng(1., 1.), 3, "Hotel1", 100, "Address A");
-    final Hotel hotelB = new Hotel("Bordeaux", new LatLng(1., 1.), 4, "Hotel2", 200, "Address B");
-
-    final Activity activityA = new Activity("name", "address", "Bordeaux", new LatLng(1., 1.), ActivityType.CULTURE, 50., List.of(true, true, true, true, true, true, true));
-    final Activity activityB = new Activity("name", "address", "Bordeaux", new LatLng(1.3, 1.3), ActivityType.CINEMA, 75., List.of(true, true, true, true, true, true, true));
-
-    // Distance between hotel A and activity B is 47.171
-
-    final Pair<Hotel, List<Activity>> pairA = new Pair<>(hotelA, List.of(activityA, activityB));
-    final Pair<Hotel, List<Activity>> pairB = new Pair<>(hotelB, List.of(activityA, activityB));
 
     @Test
     public void testGetTotalPrice_withoutElements() {

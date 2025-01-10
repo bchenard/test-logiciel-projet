@@ -1,4 +1,5 @@
 package com.testlog.projet.services;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,13 +8,8 @@ import com.testlog.projet.types.SimpleTrip;
 import com.testlog.projet.types.TransportationMode;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +52,8 @@ public class TransportService implements ICityService<SimpleTrip> {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String json = fileReader.readAll("src/main/resources/trips.json");
-            return mapper.readValue(json, new TypeReference<>() {});
+            return mapper.readValue(json, new TypeReference<>() {
+            });
         } catch (IOException e) {
             throw new RuntimeException("Failed to load city data from trips.json", e);
         }
@@ -77,8 +74,13 @@ public class TransportService implements ICityService<SimpleTrip> {
         @JsonProperty("end")
         private String end;
 
-        public String getStart() { return start; }
-        public String getEnd() { return end; }
+        public String getStart() {
+            return start;
+        }
+
+        public String getEnd() {
+            return end;
+        }
     }
 
     private static class ConnectionInfo {
@@ -94,9 +96,20 @@ public class TransportService implements ICityService<SimpleTrip> {
         @JsonProperty("hours")
         private List<Schedule> hours;
 
-        public String getDestination() { return destination; }
-        public String getMode() { return mode; }
-        public double getPrice() { return price; }
-        public List<Schedule> getHours() { return hours; }
+        public String getDestination() {
+            return destination;
+        }
+
+        public String getMode() {
+            return mode;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public List<Schedule> getHours() {
+            return hours;
+        }
     }
 }

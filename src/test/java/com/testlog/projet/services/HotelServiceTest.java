@@ -11,17 +11,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class HotelServiceTest {
 
-    private IFileReader fileReader;
-
     private final String hotelA = "{\"name\":\"Hotel A\",\"stars\":4,\"price\":150.0,\"address\":\"Address A\",\"lat\":\"48.8566\",\"lon\":\"2.3522\"}";
     private final String hotelB = "{\"name\":\"Hotel B\",\"stars\":5,\"price\":300.0,\"address\":\"Address B\",\"lat\":\"48.8584\",\"lon\":\"2.2945\"}";
+    private IFileReader fileReader;
 
     @BeforeEach
     public void setUp() {

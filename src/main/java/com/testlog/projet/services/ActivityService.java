@@ -3,15 +3,12 @@ package com.testlog.projet.services;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.testlog.projet.services.io.FileReader;
 import com.testlog.projet.services.io.IFileReader;
 import com.testlog.projet.types.Activity;
 import com.testlog.projet.types.ActivityType;
 import com.testlog.projet.types.LatLng;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +47,8 @@ public class ActivityService implements ICityService<Activity> {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String json = fileReader.readAll("src/main/resources/activities.json");
-            return mapper.readValue(json, new TypeReference<>() {});
+            return mapper.readValue(json, new TypeReference<>() {
+            });
         } catch (IOException e) {
             throw new RuntimeException("Failed to load city data from activities.json", e);
         }

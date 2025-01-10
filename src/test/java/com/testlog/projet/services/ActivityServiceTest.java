@@ -14,8 +14,8 @@ import static org.mockito.Mockito.*;
 
 public class ActivityServiceTest {
 
-    private IFileReader fileReader;
     private final String activity = "{\"category\":\"Sport\",\"price\":12.5,\"name\":\"Salle de sport Rennes\",\"address\":\"10 Rue du Parc, Rennes\",\"lat\":\"48.08798165\",\"lon\":\"-1.6154534700343328\",\"days\":[true,false,true,false,true,false,false]}";
+    private IFileReader fileReader;
 
     @BeforeEach
     public void setUp() {

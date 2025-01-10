@@ -11,16 +11,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CitySolverTest {
+    final Activity activityA = new Activity("name", "address", "Bordeaux", new LatLng(1., 1.), ActivityType.CULTURE, 50., List.of(true, true, true, true, true, true, true));
+    final Activity activityB = new Activity("name", "address", "Bordeaux", new LatLng(1.3, 1.3), ActivityType.CINEMA, 75., List.of(true, true, true, true, true, true, true));
+    final Activity activityC = new Activity("name", "address", "Bordeaux", new LatLng(1.5, 1.5), ActivityType.SPORT, 100., List.of(true, true, true, true, true, true, true));
     CitySolver solver;
 
     @BeforeEach
     public void setUp() {
         solver = new CitySolver();
     }
-
-    final Activity activityA = new Activity("name", "address", "Bordeaux", new LatLng(1., 1.), ActivityType.CULTURE, 50., List.of(true, true, true, true, true, true, true));
-    final Activity activityB = new Activity("name", "address", "Bordeaux", new LatLng(1.3, 1.3), ActivityType.CINEMA, 75., List.of(true, true, true, true, true, true, true));
-    final Activity activityC = new Activity("name", "address", "Bordeaux", new LatLng(1.5, 1.5), ActivityType.SPORT, 100., List.of(true, true, true, true, true, true, true));
 
     @Test
     public void testSolve_withNoDays() {

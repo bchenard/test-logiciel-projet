@@ -8,8 +8,6 @@ import com.testlog.projet.types.Hotel;
 import com.testlog.projet.types.LatLng;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,8 @@ public class HotelService implements ICityService<Hotel> {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String json = fileReader.readAll("src/main/resources/hotels.json");
-            return mapper.readValue(json, new TypeReference<>() {});
+            return mapper.readValue(json, new TypeReference<>() {
+            });
         } catch (IOException e) {
             throw new RuntimeException("Failed to load city data from hotels.json", e);
         }
@@ -73,11 +72,28 @@ public class HotelService implements ICityService<Hotel> {
         @JsonProperty("lon")
         private String lon;
 
-        public String getName() { return name; }
-        public int getStars() { return stars; }
-        public double getPrice() { return price; }
-        public String getAddress() { return address; }
-        public String getLat() { return lat; }
-        public String getLon() { return lon; }
+        public String getName() {
+            return name;
+        }
+
+        public int getStars() {
+            return stars;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public String getLat() {
+            return lat;
+        }
+
+        public String getLon() {
+            return lon;
+        }
     }
 }

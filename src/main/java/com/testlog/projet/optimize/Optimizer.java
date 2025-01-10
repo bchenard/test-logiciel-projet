@@ -1,14 +1,11 @@
 package com.testlog.projet.optimize;
 
-import com.testlog.projet.criteria.CityCriteria;
-import com.testlog.projet.types.ComposedTrip;
 import com.testlog.projet.criteria.AdditionalCriteria;
+import com.testlog.projet.criteria.CityCriteria;
 import com.testlog.projet.criteria.TransportCriteria;
 import com.testlog.projet.optimize.city.ICityOptimizer;
-import com.testlog.projet.types.Activity;
-import com.testlog.projet.types.Hotel;
 import com.testlog.projet.types.Package;
-import com.testlog.projet.types.Pair;
+import com.testlog.projet.types.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

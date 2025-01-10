@@ -14,13 +14,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class TransportOptimizerTest {
-
-    ICityService<SimpleTrip> transportService;
-    TransportOptimizer transportOptimizer;
 
     final LocalDateTime departure = LocalDateTime.parse("2025-01-08T08:00:00"); // Wednesday
     final Duration duration = Duration.ofDays(1);
@@ -31,7 +29,8 @@ public class TransportOptimizerTest {
     final TransportCriteria transportCriteriaDuration = new TransportCriteria(TransportationMode.NOT_SPECIFIED, false);
     final double maxPrice = 2000.;
     final AdditionalCriteria other = new AdditionalCriteria(departure, maxPrice, duration, "origin", "destination");
-
+    ICityService<SimpleTrip> transportService;
+    TransportOptimizer transportOptimizer;
     SimpleTrip forwardTripTrain;
     SimpleTrip backwardTripTrain;
     SimpleTrip forwardTripPlane;

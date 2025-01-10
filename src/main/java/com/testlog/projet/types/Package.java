@@ -2,7 +2,8 @@ package com.testlog.projet.types;
 
 import java.util.List;
 
-public record Package(List<Activity> activities, Hotel hotel, ComposedTrip firstTrip, ComposedTrip returnTrip, double totalPrice) {
+public record Package(List<Activity> activities, Hotel hotel, ComposedTrip firstTrip, ComposedTrip returnTrip,
+                      double totalPrice) {
     @Override
     public String toString() {
         StringBuilder activitiesString = new StringBuilder();

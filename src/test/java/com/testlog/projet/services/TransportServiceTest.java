@@ -16,9 +16,9 @@ import static org.mockito.Mockito.*;
 
 public class TransportServiceTest {
 
-    private IFileReader fileReader;
     private final String trip = "{\"destination\":\"Destination\",\"mode\":\"train\",\"price\":12.5,\"hours\":[{\"start\":\"08:00\",\"end\":\"10:00\"}]}";
     private final LocalDateTime midnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+    private IFileReader fileReader;
 
     @BeforeEach
     public void setUp() {

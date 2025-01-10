@@ -1,14 +1,16 @@
 package com.testlog.projet.optimize;
 
-import com.testlog.projet.types.ComposedTrip;
 import com.testlog.projet.criteria.TransportCriteria;
 import com.testlog.projet.services.ICityService;
-import com.testlog.projet.services.TransportService;
+import com.testlog.projet.types.ComposedTrip;
 import com.testlog.projet.types.SimpleTrip;
 import com.testlog.projet.types.TransportationMode;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TransportOptimizer implements ITransportOptimizer {
     private final ICityService<SimpleTrip> transportService;
